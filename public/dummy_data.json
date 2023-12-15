@@ -1,0 +1,79 @@
+{ "events":[
+    {
+        "status": "Case Added",
+        "date": "2018-01-10",
+        "description": "Case Added to the system"
+
+    },
+    {
+        "status": "Sample Received",
+        "date": "2018-02-10",
+        "description": "Sample Received to the system"
+    },
+    {
+        "status": "Sequenced",
+        "date": "2018-04-10",
+        "description": "Sequenced to the system"
+    },
+    {
+        "status": "Analysis Pipeline",
+        "date": "2018-07-10",
+        "description": "Analysis Pipeline to the system"
+  
+    },
+    {
+        "status": "Pheno Added",
+        "date": "2018-08-10",
+        "description": "Pheno Added to the system"
+  
+    },
+    {
+        "status": "Unknown sig variant",
+        "date": "2018-10-10",
+        "description": "Unknown sig variant to the system"
+  
+    },
+    {
+        "status": "Re-interprete Pipeline",
+        "date": "2019-01-10",
+        "description": "Re-interprete Pipeline to the system"
+  
+    },
+    {
+        "status": "Unknown sig variant",
+        "date": "2019-03-10",
+        "description": "Unknown sig variant to the system"
+  
+    },
+    {
+        "status": "Pheno Added",
+        "date": "2019-08-10",
+        "description": "Pheno Added to the system"
+  
+    },
+    {
+        "status": "Re-interprete Pipeline",
+        "date": "2019-09-10",
+        "description": "Re-interprete Pipeline to the system"
+  
+    },
+    {
+        "status": "Re-interprete Pipeline",
+        "date": "2020-01-10",
+        "description": "Re-interprete Pipeline to the system"
+  
+    },
+    {
+        "status": "Significant Variant",
+        "date": "2020-03-11",
+        "description": "Significant Variant to the system"
+  
+    },
+    {
+        "status": "Case Diagnosed",
+        "date": "2020-05-11",
+        "description": "Case Diagnosed to the system"
+  
+    }
+    
+]}
