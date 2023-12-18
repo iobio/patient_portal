@@ -1,110 +1,148 @@
 <template>
-    <div class="timeline">
-        <v-timeline align="start" direction="horizontal">
-            <v-timeline-item
-              v-for="(item, i) in items"
-              :key="i"
-              :dot-color="item.color"
-              :icon="item.icon"
-              fill-dot
-            >
-              <v-card>
-                <v-card-title :class="['text-h6', `bg-${item.color}`]">
-                  Case Added
-                </v-card-title>
-                <v-card-text class="bg-white text--primary">
-                  <p>
-                    Description of event
-                  </p>
-                  <v-btn :color="item.color" variant="outlined"> Button </v-btn>
-                </v-card-text>
-              </v-card>
-            </v-timeline-item>
-        </v-timeline>
-
-    </div>
-
+  <v-container class="timeline-container">
+    <v-timeline direction="horizontal" line-thickness="22" side="start" class="timeline-group">
+      <v-timeline-item
+        v-for="(event, i) in events"
+        :key="i"
+        :dot-color="event.color"
+        size="small"
+      >
+        <div>
+          <p class="text-title">
+            {{ event.type }}
+          </p>
+          
+          <div :class="event.color">
+            <img :src="event.svgContainer" :alt="event.type">
+          </div>
+        </div>
+       
+        <template v-slot:opposite>
+          <p class="text-date">
+            {{ event.formattedDate }}
+          </p>
+        </template>
+          
+      </v-timeline-item>
+    </v-timeline>
+  </v-container>
+ 
+      
   
 </template>
 
 <script>
+import Event from '../model/Event.js'
+
 export default {
   name: 'timeline',
   components: {
     
   },
-  data: () => ({
-    items: [
-        {
-          color: 'red-lighten-2',
-          icon: 'mdi-star',
-        },
-        {
-          color: 'purple-lighten-2',
-          icon: 'mdi-book-variant',
-        },
-        {
-          color: 'green-lighten-1',
-          icon: 'mdi-airballoon',
-        },
-        {
-          color: 'indigo-lighten-2',
-          icon: 'mdi-layers-triple',
-        },
-      ],
+  data () {
+    return {
+      events: [],
+    }
+
+  },
     
-  }),
   computed: {
     
   },
+
   methods: {
+    // getSvgPath(eventType) {
+    //   // Logic to determine the SVG path based on the event type
+    //   if (eventType === 'Pheno Added') {
+    //     return '/tall-icon-container.svg';
+    //   } else if (eventType === 'Unknown sig variant') {
+    //     return '/tall-icon-container.svg';
+    //   } else if (eventType === 'Significant variant') {
+    //     return '/tall-icon-container.svg';
+    //   } else if (eventType === 'Case diagnosed') {
+    //     return '/tall-icon-container.svg'
+    //   } else {
+    //     // Default SVG path if the event type doesn't match
+    //     return '/short-icon-container.svg';
+    //   }
+    // }
     
   },
+
   created () {
     
-  }
+  },
+
+  async mounted() {
+    try {
+      const response = await fetch('dummy_data.json');
+      const jsonData = await response.json();
+
+      // Populate the events array with Event instances
+      this.events = jsonData.events.map(
+        (event) => new Event(event.type, event.date, event.description)
+      );
+    } catch (error) {
+      console.error('Error fetching or parsing data:', error);
+    }
+
+    console.log(this.events);
+  },
 }
+
 </script>
 
 
 
 <style lang="sass">
 
-.timeline
-    margin: 0 auto
-    max-width: 600px
-    padding: 200px 0
-    .v-timeline-item
-        .v-timeline-item__icon
-        border-radius: 50%
-        height: 30px
-        width: 30px
-        .v-icon
-            font-size: 16px
-            line-height: 30px
-        .v-timeline-item__fill-dot
-        border-radius: 50%
-        height: 10px
-        width: 10px
-        .v-timeline-item__content
-        margin-left: 20px
-        .v-card
-            width: 100%
-            .v-card__title
-            padding: 10px 16px
-            .v-icon
-                font-size: 16px
-                margin-right: 10px
-            .v-card__text
-            padding: 16px
-            .v-btn
-                margin-top: 10px
-                width: 100%
-                .v-icon
-                margin-right: 10px
-                font-size: 16px
-                line-height: 30px
+.timeline-container
+  position: absolute
+  height: 350px
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+  background-color: #ffffff
+  border-width: 1px
+  border-style: ridge
+  border-color: rgba(0, 0, 0, 0.12)
 
+.v-container
+  padding: 20px !important
+  overflow: auto !important
 
+.timeline-group
+  margin: 200px 0px 0px 0px!important
+  padding: 0px 0px 0px 0px !important
+
+.text-title
+  font-size: 10px !important
+  font-weight: bold !important
+  margin: 0px 0px 0px 0px !important
+  padding: 0px 0px 0px 0px !important
+  text-align: center !important
+  height: 35px !important
+  width: 50px !important
+  color: #808080 !important
+
+.v-timeline-item__opposite
+  margin: 5px 0px 0px 0px !important
+  padding: 0px 0px 0px 0px !important
+  width: 100px !important
+
+.v-timeline-item__body
+  margin: 0px 0px 0px 0px !important
+  padding: 0px 0px 0px 0px !important
+
+.text-date
+  font-size: 10px !important
+  font-weight: bold !important
+  margin: 15px 25px 0px 0px !important
+  padding: 0px 0px 0px 0px !important
+  text-align: center !important
+  transform: rotate(315deg) !important
+  color: #808080 !important
+  
+  
 
 </style>

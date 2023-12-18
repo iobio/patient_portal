@@ -1,78 +1,78 @@
 { "events":[
     {
-        "status": "Case Added",
+        "type": "Case Added",
         "date": "2018-01-10",
-        "description": "Case Added to the system"
+        "description": "Case Added to the timeline"
 
     },
     {
-        "status": "Sample Received",
+        "type": "Sample Received",
         "date": "2018-02-10",
-        "description": "Sample Received to the system"
+        "description": "Sample Received to the timeline"
     },
     {
-        "status": "Sequenced",
+        "type": "Sequenced",
         "date": "2018-04-10",
-        "description": "Sequenced to the system"
+        "description": "Sequenced to the timeline"
     },
     {
-        "status": "Analysis Pipeline",
+        "type": "Analysis Pipeline",
         "date": "2018-07-10",
-        "description": "Analysis Pipeline to the system"
+        "description": "Analysis Pipeline to the timeline"
   
     },
     {
-        "status": "Pheno Added",
+        "type": "Pheno Added",
         "date": "2018-08-10",
-        "description": "Pheno Added to the system"
+        "description": "Pheno Added to the timeline"
   
     },
     {
-        "status": "Unknown sig variant",
+        "type": "Unknown sig variant",
         "date": "2018-10-10",
-        "description": "Unknown sig variant to the system"
+        "description": "Unknown sig variant to the timeline"
   
     },
     {
-        "status": "Re-interprete Pipeline",
+        "type": "Re-interprete Pipeline",
         "date": "2019-01-10",
-        "description": "Re-interprete Pipeline to the system"
+        "description": "Re-interprete Pipeline to the timeline"
   
     },
     {
-        "status": "Unknown sig variant",
+        "type": "Unknown sig variant",
         "date": "2019-03-10",
-        "description": "Unknown sig variant to the system"
+        "description": "Unknown sig variant to the timeline"
   
     },
     {
-        "status": "Pheno Added",
+        "type": "Pheno Added",
         "date": "2019-08-10",
-        "description": "Pheno Added to the system"
+        "description": "Pheno Added to the timeline"
   
     },
     {
-        "status": "Re-interprete Pipeline",
+        "type": "Re-interprete Pipeline",
         "date": "2019-09-10",
-        "description": "Re-interprete Pipeline to the system"
+        "description": "Re-interprete Pipeline to the timeline"
   
     },
     {
-        "status": "Re-interprete Pipeline",
+        "type": "Re-interprete Pipeline",
         "date": "2020-01-10",
-        "description": "Re-interprete Pipeline to the system"
+        "description": "Re-interprete Pipeline to the timeline"
   
     },
     {
-        "status": "Significant Variant",
+        "type": "Significant Variant",
         "date": "2020-03-11",
-        "description": "Significant Variant to the system"
+        "description": "Significant Variant to the timeline"
   
     },
     {
-        "status": "Case Diagnosed",
+        "type": "Case Diagnosed",
         "date": "2020-05-11",
-        "description": "Case Diagnosed to the system"
+        "description": "Case Diagnosed to the timeline"
   
     }
     

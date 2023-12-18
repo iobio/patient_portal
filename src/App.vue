@@ -25,7 +25,7 @@ export default {
 
 <template>
   <v-app>
-    <timeline></timeline>
+      <timeline></timeline>
   </v-app>
 </template>
 
