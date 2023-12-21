@@ -1,18 +1,32 @@
 <template>
   <v-container class="timeline-container">
-    <v-timeline direction="horizontal" line-thickness="22" side="start" class="timeline-group">
+    <v-card-title class="timeline-title">
+      Case History
+    </v-card-title>
+    <v-timeline direction="horizontal" line-thickness="23" side="start" class="timeline-group">
       <v-timeline-item
         v-for="(event, i) in events"
         :key="i"
         :dot-color="event.color"
         size="small"
       >
-        <div>
-          <p class="text-title">
-            {{ event.type }}
-          </p>
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <!-- <div class="title-container">
+            <p class="text-title">
+              {{ event.type }}
+            </p>
+           
+          </div> -->
+          <div class="title-container">
+            <v-tooltip top :text="event.description">
+              <template v-slot:activator="{ props }">
+                <p v-bind="props" class="text-title">{{ event.type }}</p>
+              </template>
+            </v-tooltip>
+          </div>
           
-          <div :class="event.color">
+          
+          <div class="image-container">
             <img :src="event.svgContainer" :alt="event.type">
           </div>
         </div>
@@ -26,9 +40,7 @@
       </v-timeline-item>
     </v-timeline>
   </v-container>
- 
-      
-  
+
 </template>
 
 <script>
@@ -98,7 +110,7 @@ export default {
 
 .timeline-container
   position: absolute
-  height: 350px
+  height: 400px
   top: 50%
   left: 50%
   transform: translate(-50%, -50%)
@@ -107,23 +119,39 @@ export default {
   border-style: ridge
   border-color: rgba(0, 0, 0, 0.12)
 
+.timeline-title
+  font-size: 20px !important
+  font-weight: bold !important
+  color: #808080 !important
+ 
 .v-container
   padding: 20px !important
-  overflow: auto !important
+  overflow-x: auto !important
 
 .timeline-group
-  margin: 200px 0px 0px 0px!important
+  margin: 180px 0px 0px 0px!important
   padding: 0px 0px 0px 0px !important
+
+.title-container
+  margin: 0px 0px 25px 0px !important
+  padding: 0px 0px 0px 0px !important
+  justify-content: space-between !important
+  align-items: center !important
+  height: 10px !important
+  width: 60px !important
 
 .text-title
   font-size: 10px !important
   font-weight: bold !important
   margin: 0px 0px 0px 0px !important
   padding: 0px 0px 0px 0px !important
+  justify-content: space-around !important
   text-align: center !important
-  height: 35px !important
-  width: 50px !important
   color: #808080 !important
+
+.image-container
+  padding: 0px 0px 0px 0px !important
+  margin: 0px 0px 0px 0px !important
 
 .v-timeline-item__opposite
   margin: 5px 0px 0px 0px !important
@@ -133,6 +161,9 @@ export default {
 .v-timeline-item__body
   margin: 0px 0px 0px 0px !important
   padding: 0px 0px 0px 0px !important
+  justify-content: center !important
+  align-items: center !important
+  width: 46px !important
 
 .text-date
   font-size: 10px !important

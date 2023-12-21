@@ -38,7 +38,7 @@ class Event {
             "Unknown sig variant": "#FFA500",
             "Re-interprete Pipeline": "#000080",
             "Significant Variant": "#FF0000",
-            "Case Diagnosed": "#00FF00",
+            "Case Diagnosed": "#90B134",
           };
       
           // Set the color based on the event type
