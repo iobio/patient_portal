@@ -1,79 +1,69 @@
 { "events":[
     {
-        "type": "Case Added",
-        "date": "2018-01-10",
-        "description": "Case Added to the timeline"
+        "type": "Application Submitted",
+        "date": "2017-07-10",
+        "description": "Application submitted to the timeline"
 
     },
     {
-        "type": "Sample Received",
-        "date": "2018-02-10",
-        "description": "Sample Received to the timeline"
+        "type": "Medical Records Submitted",
+        "date": "2017-07-20",
+        "description": "Medical records submitted to the timeline"
     },
     {
-        "type": "Sequenced",
-        "date": "2018-04-10",
-        "description": "Sequenced to the timeline"
+        "type": "Medical Records Received",
+        "date": "2017-08-10",
+        "description": "Medical records received to the timeline"
     },
     {
-        "type": "Analysis Pipeline",
-        "date": "2018-07-10",
-        "description": "Analysis Pipeline to the timeline"
+        "type": "Decision Date",
+        "date": "2021-12-10",
+        "description": "Decision date to the timeline"
   
     },
     {
-        "type": "Pheno Added",
-        "date": "2018-08-10",
-        "description": "Pheno Added to the timeline"
+        "type": "Evaluation Started",
+        "date": "2021-12-20",
+        "description": "Evaluation started to the timeline"
   
     },
     {
-        "type": "Unknown sig variant",
-        "date": "2018-10-10",
-        "description": "Unknown sig variant to the timeline"
+        "type": "Sequence Data Received",
+        "date": "2022-01-10",
+        "description": "Sequence data received to the timeline"
   
     },
     {
-        "type": "Re-interprete Pipeline",
-        "date": "2019-01-10",
-        "description": "Re-interprete Pipeline to the timeline"
+        "type": "Evaluation Completed",
+        "date": "2022-01-25",
+        "description": "Evaluation completed to the timeline"
   
     },
     {
-        "type": "Unknown sig variant",
-        "date": "2019-03-10",
-        "description": "Unknown sig variant to the timeline"
+        "type": "Wrap Up Documents",
+        "date": "2022-02-15",
+        "description": "Wrap up docs to the timeline"
   
     },
     {
-        "type": "Pheno Added",
-        "date": "2019-08-10",
-        "description": "Pheno Added to the timeline"
+        "type": "Diagnosis entered",
+        "date": "2022-03-10",
+        "description": "Diagnosis entered to the timeline"
   
     },
     {
-        "type": "Re-interprete Pipeline",
-        "date": "2019-09-10",
-        "description": "Re-interprete Pipeline to the timeline"
+        "type": "Samples sent to MOSC",
+        "date": "2022-04-10",
+        "description": "Samples sent to MOSC to the timeline"
   
     },
     {
-        "type": "Re-interprete Pipeline",
-        "date": "2020-01-10",
-        "description": "Re-interprete Pipeline to the timeline"
-  
-    },
-    {
-        "type": "Significant Variant",
-        "date": "2020-03-11",
-        "description": "Significant Variant to the timeline"
-  
-    },
-    {
-        "type": "Case Diagnosed",
-        "date": "2020-05-11",
-        "description": "Case Diagnosed to the timeline"
-  
+        "type": "Results Received",
+        "date": "2022-04-20",
+        "description": "Results received to the timeline"
+        
     }
+   
+
     
 ]}
