@@ -62,7 +62,20 @@
         "date": "2022-04-20",
         "description": "Results received to the timeline"
         
+    },
+    {
+        "type": "Samples sent to MOSC",
+        "date": "2022-11-10",
+        "description": "Samples sent to MOSC to the timeline"
+  
+    },
+    {
+        "type": "Results Received",
+        "date": "2022-12-20",
+        "description": "Results received to the timeline"
+        
     }
+    
    
 
     

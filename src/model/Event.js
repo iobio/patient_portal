@@ -11,15 +11,17 @@ class Event {
 
     setIcon() {
         const typeToIconMapping = {
-            "Case Added": "case-added.svg",
-            "Sample Received": "sample-received.svg",
-            "Sequenced": "sequenced.svg",
-            "Analysis Pipeline": "analysis-pipeline.svg",
-            "Pheno Added": "pheno-added.svg",
-            "Unknown sig variant": "unknown-sig-variant.svg",
-            "Re-interprete Pipeline": "reinterprete-pipeline.svg",
-            "Significant Variant": "significant-variant.svg",
-            "Case Diagnosed": "case-diagnosed.svg",
+            "Application Submitted": "case-added.svg",
+            "Medical Records Submitted": "sample-received.svg",
+            "Medical Records Received": "sequenced.svg",
+            "Decision Date": "analysis-pipeline.svg",
+            "Evaluation Started": "pheno-added.svg",
+            "Sequence Data Received": "unknown-sig-variant.svg",
+            "Evaluation Completed": "reinterprete-pipeline.svg",
+            "Wrap Up Documents": "significant-variant.svg",
+            "Diagnosis entered": "case-diagnosed.svg",
+            "Samples sent to MOSC": "case-diagnosed.svg",
+            "Results Received": "case-diagnosed.svg",
           };
       
           // Set the Icon SVG based on the event type
@@ -30,15 +32,17 @@ class Event {
 
     setColor() {
         const typeToColorMapping = {
-            "Case Added": "#FFFFFF",
-            "Sample Received": "#FFFFFF",
-            "Sequenced": "#FFFFFF",
-            "Analysis Pipeline": "#000080",
-            "Pheno Added": "#006400",
-            "Unknown sig variant": "#FFA500",
-            "Re-interprete Pipeline": "#000080",
-            "Significant Variant": "#FF0000",
-            "Case Diagnosed": "#90B134",
+            "Application Submitted": "#FFFFFF",
+            "Medical Records Submitted": "#FFFFFF",
+            "Medical Records Received": "#FFFFFF",
+            "Decision Date": "#000080",
+            "Evaluation Started": "#006400",
+            "Sequence Data Received": "#FFA500",
+            "Evaluation Completed": "#000080",
+            "Wrap Up Documents": "#FF0000",
+            "Diagnosis entered": "#90B134",
+            "Samples sent to MOSC": "#90B134",
+            "Results Received": "#90B134",
           };
       
           // Set the color based on the event type
@@ -49,15 +53,17 @@ class Event {
 
     setSvgContainer() {
         const typeToSvgContainerMapping = {
-            "Case Added": "short-icon-container.svg",
-            "Sample Received": "short-icon-container.svg",
-            "Sequenced": "short-icon-container.svg",
-            "Analysis Pipeline": "short-icon-container.svg",
-            "Pheno Added": "short-icon-container.svg",
-            "Unknown sig variant": "short-icon-container.svg",
-            "Re-interprete Pipeline": "short-icon-container.svg",
-            "Significant Variant": "short-icon-container.svg",
-            "Case Diagnosed": "short-icon-container.svg",
+            "Application Submitted": "short-icon-container.svg",
+            "Medical Records Submitted": "short-icon-container.svg",
+            "Medical Records Received": "short-icon-container.svg",
+            "Decision Date": "short-icon-container.svg",
+            "Evaluation Started": "short-icon-container.svg",
+            "Sequence Data Received": "short-icon-container.svg",
+            "Evaluation Completed": "short-icon-container.svg",
+            "Wrap Up Documents": "short-icon-container.svg",
+            "Diagnosis entered": "short-icon-container.svg",
+            "Samples sent to MOSC": "short-icon-container.svg",
+            "Results Received": "short-icon-container.svg",
           };
       
           // Set the SVG container based on the event type
