@@ -1,14 +1,25 @@
 { "events":[
     {
         "type": "Application Submitted",
-        "date": "2017-07-10",
+        "date": "2017-07-02",
         "description": "Application submitted to the timeline"
 
     },
     {
         "type": "Medical Records Submitted",
-        "date": "2017-07-20",
+        "date": "2017-07-02",
         "description": "Medical records submitted to the timeline"
+    },
+    {
+        "type": "Medical Records Submitted",
+        "date": "2017-07-02",
+        "description": "Medical records submitted to the timeline"
+    },
+
+    {
+        "type": "Medical Records Received",
+        "date": "2017-07-20",
+        "description": "Medical records received to the timeline"
     },
     {
         "type": "Medical Records Received",
@@ -23,7 +34,7 @@
     },
     {
         "type": "Evaluation Started",
-        "date": "2021-12-20",
+        "date": "2021-12-12",
         "description": "Evaluation started to the timeline"
   
     },
@@ -35,7 +46,7 @@
     },
     {
         "type": "Evaluation Completed",
-        "date": "2022-01-25",
+        "date": "2022-01-15",
         "description": "Evaluation completed to the timeline"
   
     },

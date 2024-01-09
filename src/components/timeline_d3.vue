@@ -1,12 +1,22 @@
 <template>
+  <div class="timeline-container">
+
+    <div class="title-container">
+     <svg width="1015" height="41">
+      <image xlink:href="/public/Title Icon.svg"/>
+     </svg>
+    </div>
+
     <div class="svg-container">
       <svg ref="chart" width="960" height="500"></svg>
 
       <div>
         <Modal :show="modalShow" :type="modalType" :description="modalDescription" @close="closeModal" />
       </div>
-
     </div>
+
+  </div>
+   
 </template>
   
   <script>
@@ -26,19 +36,20 @@
         modalShow: false,
         modalType: '',
         modalDescription: '',
-       
-        
       };
     },
 
     mounted() {
+      const me = this;
+
       let svg = d3.select(this.$refs.chart),
       margin = {top: 20, right: 20, bottom: 110, left: 40},
-      margin2 = {top: 430, right: 20, bottom: 30, left: 40},
+      margin2 = {top: 420, right: 20, bottom: 30, left: 40},
       width = +svg.attr("width") - margin.left - margin.right,
       height = +svg.attr("height") - margin.top - margin.bottom,
       height2 = +svg.attr("height") - margin2.top - margin2.bottom;
       console.log("width", width, "height", height, "height2", height2)
+      console.log("margin", margin, "margin2", margin2)
 
       let x = d3.scaleTime().range([0, width]),
           x2 = d3.scaleTime().range([0, width]),
@@ -58,7 +69,11 @@
                     .ticks(d3.timeYear.every(1))  // Show ticks for every year
                     .tickFormat(d3.timeFormat("%Y"));
 
-      let yAxis = d3.axisLeft(y)
+      let yAxis_left = d3.axisLeft(y)
+                    .tickSize(0)
+                    .tickFormat("");
+
+      let yAxis_right = d3.axisRight(y)
                     .tickSize(0)
                     .tickFormat("");
 
@@ -78,12 +93,12 @@
         .attr("width", width)
         .attr("height", height);
 
-      let focus = svg.append("g")
-          .attr("class", "focus")
+      let mainChart = svg.append("g")
+          .attr("class", "mainChart")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      let context = svg.append("g")
-          .attr("class", "context")
+      let navChart = svg.append("g")
+          .attr("class", "navChart")
           .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
    
@@ -133,26 +148,31 @@
             d.verticalOffset = monthEventCount[monthKey]; // New property to store vertical offset
         });
           
+        let lastEventDate = formattedData[formattedData.length - 1].date;
+        let nextMonthAfterLastEvent = d3.utcMonth.offset(lastEventDate, 1);
+        let fourMonthsBeforeNext = d3.utcMonth.offset(nextMonthAfterLastEvent, -5);
+        let defaultSelection = [x2(fourMonthsBeforeNext), x2(nextMonthAfterLastEvent)];
 
-        // brush default selection: 5 months
-        const defaultSelection = [
-          x(d3.utcMonth.offset(x.domain()[1], -4)),
-          x.range()[1]
-        ];
+        console.log("defaultSelection", defaultSelection);
 
-        focus.append("g")
+        mainChart.append("g")
           .attr("class", "axis axis--x")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
 
-        focus.append("g")
+        mainChart.append("g")
           .attr("class", "axis axis--y")
-          .call(yAxis);
+          .call(yAxis_left);
 
-        focus.selectAll(".tick line")
+        mainChart.append("g")
+          .attr("class", "axis axis--y")
+          .attr("transform", "translate(" + width + ",0)")
+          .call(yAxis_right);
+
+        mainChart.selectAll(".tick line")
           .attr("class", "tick-line");
 
-        focus.selectAll(".dot")
+        mainChart.selectAll(".dot")
           .data(formattedData)
           .enter().append("image") 
           .attr("class", "dot") // Assign a class for styling
@@ -162,36 +182,33 @@
           .attr("width", 25) 
           .attr("height", 25);
 
-        focus.selectAll(".dotText")
+        mainChart.selectAll(".dotText")
           .data(formattedData)
           .enter().append("text")
           .attr("class", "dotText") // Assign a class for styling
-          .attr("x", function(d) { return x(d.date) + 25; }) // Position the text to the right of the image
+          .attr("x", function(d) { return x(d.date) + 30; }) // Position the text to the right of the image
           .attr("y", function(d) { return height / 4 + d.verticalOffset * 40; }) // Align the text vertically with the image
           .text(function(d) { return d.type; })
-          .on("click", function(d){
+          .on("click", function(event, d) {
               console.log('dotText clicked', d);
-              this.openModal(d.type, d.description);
+              me.openModal(d.type, d.description);
           });
 
-          console.log("focus", focus.selectAll(".dotText"));
 
-
-
-        context.selectAll(".dotContext")
+        navChart.selectAll(".dotContext")
           .data(formattedData)
           .enter().append("circle") 
           .attr("class", "dotContext") // Assign a class for styling
           .attr("cx", function(d) { return x2(d.date) })
-          .attr("cy", function(d) {return height2 / 5 + d.verticalOffset * 3;})
-          .attr("r", 2); 
+          .attr("cy", function(d) {return height2 / 4 + d.verticalOffset * 7; })
+          .attr("r", 3);
 
-        context.append("g")
+        navChart.append("g")
             .attr("class", "axis axis--x")
             .attr("transform", "translate(0," + height2 + ")")
             .call(xAxis2);
 
-        context.append("g")
+        navChart.append("g")
             .attr("class", "brush")
             .call(brush)
             .call(brush.move, defaultSelection);
@@ -201,12 +218,13 @@
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(xAxisTop);
 
-        svg.append("rect")
-            .attr("class", "zoom")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .call(zoom);
+            // figuring out why zoom event and click event are conflicting
+        // svg.append("rect")
+        //     .attr("class", "zoom")
+        //     .attr("width", width)
+        //     .attr("height", height)
+        //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        //     .call(zoom);
             
 
       });
@@ -217,22 +235,22 @@
         let s = event.selection || x2.range();
         x.domain(s.map(x2.invert, x2));
 
-        focus.selectAll(".dot")
+        mainChart.selectAll(".dot")
           .attr("x", function(d) { return x(d.date); })
           .attr("y", function(d) {return height / 5 + d.verticalOffset * 40;});
 
-        focus.selectAll(".dotText")
-          .attr("x", function(d) { return x(d.date) + 25; })
+        mainChart.selectAll(".dotText")
+          .attr("x", function(d) { return x(d.date) + 30; })
           .attr("y", function(d) { return height / 4 + d.verticalOffset * 40; });
 
-        focus.select(".axis--x").call(xAxis);
+        mainChart.select(".axis--x").call(xAxis);
 
-        focus.selectAll(".tick line")
+        mainChart.selectAll(".tick line")
           .attr("class", "tick-line");
 
-        svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
-            .scale(width / (s[1] - s[0]))
-            .translate(-s[0], 0));    
+        // svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+        //     .scale(width / (s[1] - s[0]))
+        //     .translate(-s[0], 0));    
       }
 
       // function zoomed(event) {
@@ -240,20 +258,20 @@
       //   let t = event.transform;
       //   x.domain(t.rescaleX(x2).domain());
 
-      //   focus.selectAll(".dot")
+      //   mainChart.selectAll(".dot")
       //     .attr("x", function(d) { return x(d.date); })
       //     .attr("y", function(d) {return height / 5 + d.verticalOffset * 40;})
 
-      //   focus.selectAll(".dotText")
+      //   mainChart.selectAll(".dotText")
       //     .attr("x", function(d) { return x(d.date) + 25; })
       //     .attr("y", function(d) { return height / 4 + d.verticalOffset * 40; })
 
-      //   focus.select(".axis--x").call(xAxis);
+      //   mainChart.select(".axis--x").call(xAxis);
 
-      //   focus.selectAll(".tick line")
+      //   mainChart.selectAll(".tick line")
       //     .attr("class", "tick-line");
 
-      //   context.select(".brush").call(brush.move, x.range().map(t.invertX, t));
+      //   navChart.select(".brush").call(brush.move, x.range().map(t.invertX, t));
       // }
   
     },
@@ -276,11 +294,23 @@
   </script>
   
   <style>
+  .timeline-container {
+    position: absolute;
+    height: 550px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border-width: 1px;
+    border-style: ridge;
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+
+
   .svg-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
   }
 
   .area {
@@ -301,7 +331,7 @@
   }
 
   .dotContext {
-    fill: red;
+    fill: steelblue;
     stroke: #fff;
     clip-path: url(#clip);
   }
