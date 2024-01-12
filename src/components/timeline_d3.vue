@@ -43,8 +43,8 @@
       const me = this;
 
       let svg = d3.select(this.$refs.chart),
-      margin = {top: 20, right: 20, bottom: 110, left: 40},
-      margin2 = {top: 420, right: 20, bottom: 30, left: 40},
+      margin = {top: 20, right: 20, bottom: 110, left: 20},
+      margin2 = {top: 420, right: 20, bottom: 30, left: 20},
       width = +svg.attr("width") - margin.left - margin.right,
       height = +svg.attr("height") - margin.top - margin.bottom,
       height2 = +svg.attr("height") - margin2.top - margin2.bottom;
@@ -58,6 +58,7 @@
           y2 = d3.scaleLinear().range([height2, 0]);
 
       let xAxis = d3.axisBottom(x)
+                    // .ticks(d3.timeMonth.every(1))  // Show ticks for every month
                     .tickFormat(d3.timeFormat("%b %Y"))
                     .tickSize(-height);
 
@@ -79,13 +80,7 @@
 
       let brush = d3.brushX()
           .extent([[0, 0], [width, height2]])
-          .on("brush end", brushed)
-
-      let zoom = d3.zoom()
-          .scaleExtent([1, Infinity])
-          .translateExtent([[0, 0], [width, height]])
-          .extent([[0, 0], [width, height]])
-          // .on("zoom", zoomed);
+          .on("brush end", brushed);
 
       svg.append("defs").append("clipPath")
         .attr("id", "clip")
@@ -101,7 +96,16 @@
           .attr("class", "navChart")
           .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
-   
+      
+      let defaultSelection;
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const startYear = currentYear - 9;
+      const minDate = new Date(startYear, 0, 1); // Jan 1st of start year
+      const maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
+      console.log("minDate", minDate, "maxDate", maxDate);
+
+
       d3.json("public/dummy_data.json").then(function(jsonData) {
 
         // Parse dates
@@ -118,17 +122,12 @@
 
         console.log("formatted data:",formattedData);
     
-        let minDate = d3.min(formattedData, function(d) { return d.date; });
-        let maxDate = d3.max(formattedData, function(d) { return d.date; });
+        // let minDate = d3.min(formattedData, function(d) { return d.date; });
+        // let maxDate = d3.max(formattedData, function(d) { return d.date; });
 
-        // Get the prior year of minDate
-        let priorYearMin = d3.timeYear.offset(minDate, -1);
-
-        // Get the next year of maxDate
-        let nextYearMax = d3.timeYear.offset(maxDate, 1);
-
-        x.domain([d3.timeMonth.floor(priorYearMin), d3.timeMonth.ceil(maxDate)]);
-        x2.domain([d3.timeYear.floor(priorYearMin), d3.timeYear.ceil(nextYearMax)]);
+        // Adjust to start at the beginning of the minDate year and end at the end of the maxDate year
+        x.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
+        x2.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
 
         xTop.domain(x.domain());
       
@@ -140,6 +139,13 @@
         // Loop through the formatted data and update y-coordinate based on the count
         formattedData.forEach(function(d) {
             const monthKey = formatMonthYear(d.date);
+             // Extract the second day of the month
+            const secondDayOfMonth = new Date(d.date);
+            secondDayOfMonth.setDate(2);
+
+            // Add the second day of the month as a new property which will be used to align the events vertically
+            d.secondDayOfMonth = secondDayOfMonth;
+
             if (!monthEventCount[monthKey]) {
                 monthEventCount[monthKey] = 1;
             } else {
@@ -147,13 +153,33 @@
             }
             d.verticalOffset = monthEventCount[monthKey]; // New property to store vertical offset
         });
-          
-        let lastEventDate = formattedData[formattedData.length - 1].date;
-        let nextMonthAfterLastEvent = d3.utcMonth.offset(lastEventDate, 1);
-        let fourMonthsBeforeNext = d3.utcMonth.offset(nextMonthAfterLastEvent, -5);
-        let defaultSelection = [x2(fourMonthsBeforeNext), x2(nextMonthAfterLastEvent)];
+        console.log("formattedData", formattedData);
 
-        console.log("defaultSelection", defaultSelection);
+        let lastEventDate = formattedData[formattedData.length - 1].secondDayOfMonth;
+
+        // Calculate next month after last event and five months before that
+        let nextMonthAfterLastEvent = d3.utcMonth.offset(lastEventDate, 1);
+        let fiveMonthsBeforeNext = d3.utcMonth.offset(nextMonthAfterLastEvent, -6);
+
+        // Ensure fiveMonthsBeforeNext is not before the min date
+        if (fiveMonthsBeforeNext < minDate) {
+            fiveMonthsBeforeNext = minDate;
+            // Adjust nextMonthAfterLastEvent to maintain 6 month range
+            nextMonthAfterLastEvent = d3.utcMonth.offset(fiveMonthsBeforeNext, 6);
+        }
+
+        let endOfTimeline = d3.timeYear.offset(d3.timeYear.ceil(maxDate), 1);
+
+        // Ensure nextMonthAfterLastEvent is not beyond the max date
+        if (nextMonthAfterLastEvent > endOfTimeline) {
+            nextMonthAfterLastEvent = endOfTimeline;
+            // Adjust fiveMonthsBeforeNext to maintain 6 month range
+            fiveMonthsBeforeNext = d3.utcMonth.offset(nextMonthAfterLastEvent, -6);
+        }
+
+        // Set default selection
+        defaultSelection = [x2(fiveMonthsBeforeNext), x2(nextMonthAfterLastEvent)];
+
 
         mainChart.append("g")
           .attr("class", "axis axis--x")
@@ -177,8 +203,8 @@
           .enter().append("image") 
           .attr("class", "dot") // Assign a class for styling
           .attr("xlink:href", function(d) { return d.svgFile; })
-          .attr("x", function(d) { return x(d.date); })
-          .attr("y", function(d) { return height / 5 + d.verticalOffset * 40; }) // Adjust the y-coordinate based on the vertical offset
+          .attr("x", function(d) { return x(d.secondDayOfMonth); })
+          .attr("y", function(d) { return d.verticalOffset * 40; }) // Adjust the y-coordinate based on the vertical offset
           .attr("width", 25) 
           .attr("height", 25);
 
@@ -186,8 +212,8 @@
           .data(formattedData)
           .enter().append("text")
           .attr("class", "dotText") // Assign a class for styling
-          .attr("x", function(d) { return x(d.date) + 30; }) // Position the text to the right of the image
-          .attr("y", function(d) { return height / 4 + d.verticalOffset * 40; }) // Align the text vertically with the image
+          .attr("x", function(d) { return x(d.secondDayOfMonth) + 30; }) // Position the text to the right of the image
+          .attr("y", function(d) { return height / 30 + d.verticalOffset * 40; }) // Align the text vertically with the image
           .text(function(d) { return d.type; })
           .on("click", function(event, d) {
               console.log('dotText clicked', d);
@@ -199,7 +225,7 @@
           .data(formattedData)
           .enter().append("circle") 
           .attr("class", "dotContext") // Assign a class for styling
-          .attr("cx", function(d) { return x2(d.date) })
+          .attr("cx", function(d) { return x2(d.secondDayOfMonth) })
           .attr("cy", function(d) {return height2 / 4 + d.verticalOffset * 7; })
           .attr("r", 3);
 
@@ -230,49 +256,43 @@
       });
 
       function brushed(event) {
-        // check event.sourceEvent.type === "zoom" to prevent brush from triggering zoom event causing indefinite loop
-        // if (!event || !event.sourceEvent || event.sourceEvent.type === "zoom") return;
-        let s = event.selection || x2.range();
+        let s = event.selection || defaultSelection;
+        let fixedBrushWidth = defaultSelection[1] - defaultSelection[0];
+
+        if (s[1] - s[0] !== fixedBrushWidth) {
+            if (event.sourceEvent && event.sourceEvent.type === "mousemove") {
+                // Adjust the brush position while maintaining the fixed size
+                let newStart = s[0];
+                let newEnd = newStart + fixedBrushWidth;
+
+                // Prevent the brush from exceeding the right boundary
+                if (newEnd > x2.range()[1]) {
+                    newEnd = x2.range()[1];
+                    newStart = newEnd - fixedBrushWidth;
+                }
+
+                // Update the selection
+                s = [newStart, newEnd];
+                d3.select(this).call(brush.move, s);
+            }
+        }
+
         x.domain(s.map(x2.invert, x2));
 
         mainChart.selectAll(".dot")
-          .attr("x", function(d) { return x(d.date); })
-          .attr("y", function(d) {return height / 5 + d.verticalOffset * 40;});
+          .attr("x", function(d) { return x(d.secondDayOfMonth); })
+          .attr("y", function(d) {return d.verticalOffset * 40;});
 
         mainChart.selectAll(".dotText")
-          .attr("x", function(d) { return x(d.date) + 30; })
-          .attr("y", function(d) { return height / 4 + d.verticalOffset * 40; });
+          .attr("x", function(d) { return x(d.secondDayOfMonth) + 30; })
+          .attr("y", function(d) { return height / 30 + d.verticalOffset * 40; });
 
         mainChart.select(".axis--x").call(xAxis);
 
         mainChart.selectAll(".tick line")
           .attr("class", "tick-line");
-
-        // svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
-        //     .scale(width / (s[1] - s[0]))
-        //     .translate(-s[0], 0));    
+          
       }
-
-      // function zoomed(event) {
-      //   if (!event || !event.sourceEvent || event.sourceEvent.type === "brush") return;
-      //   let t = event.transform;
-      //   x.domain(t.rescaleX(x2).domain());
-
-      //   mainChart.selectAll(".dot")
-      //     .attr("x", function(d) { return x(d.date); })
-      //     .attr("y", function(d) {return height / 5 + d.verticalOffset * 40;})
-
-      //   mainChart.selectAll(".dotText")
-      //     .attr("x", function(d) { return x(d.date) + 25; })
-      //     .attr("y", function(d) { return height / 4 + d.verticalOffset * 40; })
-
-      //   mainChart.select(".axis--x").call(xAxis);
-
-      //   mainChart.selectAll(".tick line")
-      //     .attr("class", "tick-line");
-
-      //   navChart.select(".brush").call(brush.move, x.range().map(t.invertX, t));
-      // }
   
     },
 
@@ -343,7 +363,7 @@
   }
 
   .dotText {
-    font-size: 10px;
+    font-size: 9px;
     font-family: sans-serif;
     fill: black;
     clip-path: url(#clip);

@@ -1,11 +1,10 @@
 { "events":[
     {
         "type": "Application Submitted",
-        "date": "2017-07-02",
+        "date": "2017-01-01",
         "description": "Application submitted to the timeline"
 
-    },
-    {
+    },    {
         "type": "Medical Records Submitted",
         "date": "2017-07-02",
         "description": "Medical records submitted to the timeline"
@@ -81,13 +80,18 @@
   
     },
     {
+        "type": "Samples sent to MOSC",
+        "date": "2022-12-10",
+        "description": "Samples sent to MOSC to the timeline"
+  
+    },
+    {
         "type": "Results Received",
-        "date": "2022-12-20",
+        "date": "2024-08-31",
         "description": "Results received to the timeline"
         
     }
-    
-   
 
-    
+   
+     
 ]}
