@@ -1,0 +1,67 @@
+<template>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Date</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(event,index) in events" :key="index">
+            <td>{{ event.type }}</td>
+            <td>{{ event.date }}</td>
+            <td>{{ event.category }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </template>
+  
+  <script>
+import Event from '../model/Event.js';
+  export default {
+    data() {
+      return {
+        events: []
+      };
+    },
+    async mounted() {
+      try {
+        const response = await fetch('dummy_data.json');
+        const jsonData = await response.json();
+        console.log(jsonData);
+        this.events = jsonData.events.map(
+          event => new Event(event.type, event.date, event.category)
+        );
+      } catch (error) {
+        console.error('Error fetching or parsing data:', error);
+      }
+    }
+  };
+  </script>
+  
+  <style>
+  .table-container {
+    width: 960px;
+    height: 450px;
+    overflow-y: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  thead {
+    background-color: #f2f2f2;
+  }
+  </style>
+  

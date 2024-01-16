@@ -7,6 +7,7 @@ class Event {
       this.icon = this.setIcon();
       this.svgContainer = this.setSvgContainer();
       this.color = this.setColor();
+      this.category = this.setCategory();
     }
 
     setIcon() {
@@ -81,6 +82,25 @@ class Event {
         const year = eventDate.getFullYear();
 
         return `${month} ${year}`;
+    }
+
+    setCategory() {
+        const typeToCategoryMapping = {
+            "Application Submitted": "Application",
+            "Medical Records Submitted": "Application",
+            "Medical Records Received": "Application",
+            "Decision Date": "Application",
+            "Evaluation Started": "Evaluation",
+            "Sequence Data Received": "Evaluation",
+            "Evaluation Completed": "Evaluation",
+            "Wrap Up Documents": "Evaluation",
+            "Diagnosis entered": "Diagnosis",
+            "Samples sent to MOSC": "Diagnosis",
+            "Results Received": "Diagnosis",
+          };
+      
+          // Set the category based on the event type
+          return typeToCategoryMapping[this.type] || null;
     }
   }
   

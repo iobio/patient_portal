@@ -7,12 +7,21 @@
      </svg>
     </div>
 
-    <div class="svg-container">
+    <div class="tabs-container">
+      <button @click="activeTab = 'timeline'"  :class="{ 'tab-selected': activeTab === 'timeline' }">Timeline</button>
+      <button @click="activeTab = 'table'" :class="{ 'tab-selected': activeTab === 'table' }">Table View</button>
+    </div>
+
+    <div class="svg-container" v-show="activeTab === 'timeline'">
       <svg ref="chart" width="960" height="500"></svg>
 
       <div>
         <Modal :show="modalShow" :type="modalType" :description="modalDescription" @close="closeModal" />
       </div>
+    </div>
+
+    <div class="table-view-container" v-show="activeTab === 'table'">
+      <table_view />
     </div>
 
   </div>
@@ -22,12 +31,14 @@
   <script>
   import * as d3 from 'd3';
   import Modal from '../components/Modal.vue';
+  import table_view from '../components/table_view.vue';
   
   export default {
     name: 'timeline_d3',
 
     components: {
       Modal,
+      table_view,
      
     },
 
@@ -36,6 +47,7 @@
         modalShow: false,
         modalType: '',
         modalDescription: '',
+        activeTab: 'timeline',
       };
     },
 
@@ -316,7 +328,7 @@
   <style>
   .timeline-container {
     position: absolute;
-    height: 550px;
+    height: 600px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -327,10 +339,23 @@
   }
 
 
-  .svg-container {
+  .svg-container, .table-view-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 500px;
+  }
+
+  .tabs-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+
+  .tab-selected {
+    background-color: #4285F4; 
+    color: white;
   }
 
   .area {
