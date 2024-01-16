@@ -8,8 +8,8 @@
     </div>
 
     <div class="tabs-container">
-      <button @click="activeTab = 'timeline'">Timeline</button>
-      <button @click="activeTab = 'table'">Table View</button>
+      <button @click="activeTab = 'timeline'"  :class="{ 'tab-selected': activeTab === 'timeline' }">Timeline</button>
+      <button @click="activeTab = 'table'" :class="{ 'tab-selected': activeTab === 'table' }">Table View</button>
     </div>
 
     <div class="svg-container" v-show="activeTab === 'timeline'">
@@ -351,6 +351,11 @@
     justify-content: center;
     align-items: center;
     height: 50px;
+  }
+
+  .tab-selected {
+    background-color: #4285F4; 
+    color: white;
   }
 
   .area {
