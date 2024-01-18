@@ -11,7 +11,17 @@
     },
     {
         "type": "Medical Records Submitted",
-        "date": "2017-07-02",
+        "date": "2017-07-03",
+        "description": "Medical records submitted to the timeline"
+    },
+    {
+        "type": "Medical Records Submitted",
+        "date": "2017-07-04",
+        "description": "Medical records submitted to the timeline"
+    },
+    {
+        "type": "Medical Records Submitted",
+        "date": "2017-07-10",
         "description": "Medical records submitted to the timeline"
     },
 

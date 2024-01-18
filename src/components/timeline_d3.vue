@@ -29,7 +29,12 @@
 
      
     <div class="svg-container" v-show="activeTab === 'timeline'">
-      <svg ref="chart" width="960" height="500"></svg>
+      <svg ref="chart" width="960" height="500">
+        <g class="legend" v-for="(category, index) in uniqueCategories" :key="category.category" :transform="'translate(' + getXPosition(index) + ', 0)'">
+          <rect width="10" height="10" :fill="category.categoryColor"></rect>
+          <text x="15" y="10">{{ category.category }}</text>
+        </g>
+      </svg>
 
       <div>
         <Modal :show="modalShow" :type="modalType" :description="modalDescription" @close="closeModal" />
@@ -95,6 +100,19 @@
           { text: 'Diagnosis', value: 'Diagnosis' }
         ],
       };
+    },
+
+    computed: {
+      uniqueCategories() {
+        const unique = {};
+        this.formattedData.forEach(item => {
+          unique[item.category] = item.categoryColor;
+        });
+        return Object.keys(unique).map(category => ({
+          category,
+          categoryColor: unique[category]
+        }));
+      }
     },
 
     watch: {
@@ -271,7 +289,7 @@
           .attr("class", "dot") // Assign a class for styling
           .attr("xlink:href", function(d) { return d.svgFile; })
           .attr("x", d => this.x(d.secondDayOfMonth))
-          .attr("y", function(d) { return d.verticalOffset * 40; }) // Adjust the y-coordinate based on the vertical offset
+          .attr("y", d => d.verticalOffset * 40) // Adjust the y-coordinate based on the vertical offset
           .attr("width", 25) 
           .attr("height", 25);
 
@@ -381,11 +399,11 @@
 
         this.mainChart.selectAll(".dot")
           .attr("x", d => this.x(d.secondDayOfMonth))
-          .attr("y", d => d.verticalOffset * 40);
+          .attr("y", d => d.verticalOffset * 35);
 
         this.mainChart.selectAll(".dotText")
           .attr("x", d => this.x(d.secondDayOfMonth) + 30)
-          .attr("y", d => this.height / 30 + d.verticalOffset * 40);
+          .attr("y", d => this.height / 30 + d.verticalOffset * 35);
 
         this.mainChart.select(".axis--x").call(this.xAxis);
 
@@ -450,6 +468,20 @@
           .attr("r", 3)
           .style("fill", function(d) { return d.categoryColor; });
 
+      },
+
+      estimateWidth(text) {
+        const charWidth = 8; // Average width per character, adjust as needed
+        return text.length * charWidth;
+      },
+
+      getXPosition(index) {
+        let initialOffset = 650; 
+        let xPos = initialOffset;
+        for (let i = 0; i < index; i++) {
+          xPos += this.estimateWidth(this.uniqueCategories[i].category) + 25; // 25 is additional spacing, adjust as needed
+        }
+        return xPos;
       }
 
 
@@ -494,7 +526,7 @@
 
   .title-text {
     padding: 10px;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .search-menu {
@@ -507,6 +539,7 @@
   .tab-selected {
     background-color: #4285F4; 
     color: white;
+    font-size: 13;
   }
 
   .area {
@@ -543,6 +576,11 @@
     font-family: sans-serif;
     fill: black;
     clip-path: url(#clip);
+  }
+
+  .legend text {
+    font-size: 12px;
+    fill: #333; 
   }
   </style>
   
