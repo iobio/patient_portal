@@ -17,32 +17,56 @@
         </tbody>
       </table>
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
 import Event from '../model/Event.js';
+
   export default {
     data() {
       return {
         events: []
       };
     },
-    async mounted() {
-      try {
+
+    props:{
+      selectedCategory: String
+    },
+
+    watch: {
+      selectedCategory(newCategory) {
+        this.filterEvents(newCategory);
+      }
+    },
+
+    mounted() {
+      this.filterEvents(this.selectedCategory);
+
+    },
+
+    methods: {
+      async filterEvents(category) {
         const response = await fetch('dummy_data.json');
         const jsonData = await response.json();
-        console.log(jsonData);
-        this.events = jsonData.events.map(
+        let allEvents = jsonData.events.map(
           event => new Event(event.type, event.date, event.category)
         );
-      } catch (error) {
-        console.error('Error fetching or parsing data:', error);
+
+        // Filter based on the category
+        if (category && category !== '') {
+          this.events = allEvents.filter(event => event.category === category);
+        } else {
+          this.events = allEvents;
+        }
       }
     }
+
+
+
   };
-  </script>
+</script>
   
-  <style>
+<style>
   .table-container {
     width: 960px;
     height: 450px;
@@ -63,5 +87,5 @@ import Event from '../model/Event.js';
   thead {
     background-color: #f2f2f2;
   }
-  </style>
+ </style>
   

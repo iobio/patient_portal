@@ -7,11 +7,27 @@
      </svg>
     </div>
 
-    <div class="tabs-container">
-      <button @click="activeTab = 'timeline'"  :class="{ 'tab-selected': activeTab === 'timeline' }">Timeline</button>
-      <button @click="activeTab = 'table'" :class="{ 'tab-selected': activeTab === 'table' }">Table View</button>
+    <div class="content-wrapper">
+
+      <div class="tabs-container">
+        <p class="title-text">Check by view:</p>
+        <button @click="activeTab = 'timeline'"  :class="{ 'tab-selected': activeTab === 'timeline' }">Timeline</button>
+        <button @click="activeTab = 'table'" :class="{ 'tab-selected': activeTab === 'table' }">Table View</button>
+      </div>
+
+      <div class="search-menu">
+        <p class="title-text">Search by category:</p>
+        <select v-model="selectedOption">
+          <option disabled value="">Please select one</option>
+          <option v-for="option in options" :key="option.value" :value="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+      </div>
+
     </div>
 
+     
     <div class="svg-container" v-show="activeTab === 'timeline'">
       <svg ref="chart" width="960" height="500"></svg>
 
@@ -21,7 +37,7 @@
     </div>
 
     <div class="table-view-container" v-show="activeTab === 'table'">
-      <table_view />
+      <table_view :selected-category="selectedOption" />
     </div>
 
   </div>
@@ -32,6 +48,7 @@
   import * as d3 from 'd3';
   import Modal from '../components/Modal.vue';
   import table_view from '../components/table_view.vue';
+  import Event from '../model/Event.js';
   
   export default {
     name: 'timeline_d3',
@@ -44,114 +61,152 @@
 
     data() {
       return {
+        x: null,
+        y: null,
+        x2: null,
+        y2: null,
+        xTop: null,
+        xAxis: null,
+        xAxisTop: null,
+        xAxis2: null,
+        yAxis_left: null,
+        yAxis_right: null,
+        mainChart: null,
+        navChart: null,
+        svg: null,
+        height: null,
+        height2: null,
+        width: null,
+        margin: null,
+        margin2: null,
+        brush: null,
+        defaultSelection: null,
+
         modalShow: false,
         modalType: '',
         modalDescription: '',
         activeTab: 'timeline',
+        formattedData: [],
+        selectedOption: '',
+        options: [
+          { text: 'None', value: '' },
+          { text: 'Application', value: 'Application' },
+          { text: 'Evaluation', value: 'Evaluation' },
+          { text: 'Diagnosis', value: 'Diagnosis' }
+        ],
       };
     },
 
-    mounted() {
+    watch: {
+      selectedOption: function (newVal, oldVal) {
+        console.log('selectedOption changed from', oldVal, 'to', newVal);
+        this.updateChart();
+      }
+    },
+
+    async mounted() {
       const me = this;
 
-      let svg = d3.select(this.$refs.chart),
-      margin = {top: 20, right: 20, bottom: 110, left: 20},
-      margin2 = {top: 420, right: 20, bottom: 30, left: 20},
-      width = +svg.attr("width") - margin.left - margin.right,
-      height = +svg.attr("height") - margin.top - margin.bottom,
-      height2 = +svg.attr("height") - margin2.top - margin2.bottom;
-      console.log("width", width, "height", height, "height2", height2)
-      console.log("margin", margin, "margin2", margin2)
+      try {
+        const fectchedData = await this.fetchData();
+        console.log("fetchedData", fectchedData);
 
-      let x = d3.scaleTime().range([0, width]),
-          x2 = d3.scaleTime().range([0, width]),
-          xTop = d3.scaleTime().range([0, width]), 
-          y = d3.scaleLinear().range([height, 0]),
-          y2 = d3.scaleLinear().range([height2, 0]);
+        this.svg = d3.select(this.$refs.chart),
+        this.margin = {top: 20, right: 20, bottom: 110, left: 20},
+        this.margin2 = {top: 420, right: 20, bottom: 30, left: 20},
+        this.width = +this.svg.attr("width") - this.margin.left - this.margin.right,
+        this.height = +this.svg.attr("height") - this.margin.top - this.margin.bottom,
+        this.height2 = +this.svg.attr("height") - this.margin2.top - this.margin2.bottom;
 
-      let xAxis = d3.axisBottom(x)
-                    // .ticks(d3.timeMonth.every(1))  // Show ticks for every month
-                    .tickFormat(d3.timeFormat("%b %Y"))
-                    .tickSize(-height);
+        this.x = d3.scaleTime().range([0, this.width]),
+        this.x2 = d3.scaleTime().range([0, this.width]),
+        this.xTop = d3.scaleTime().range([0, this.width]), 
+        this.y = d3.scaleLinear().range([this.height, 0]),
+        this.y2 = d3.scaleLinear().range([this.height2, 0]);
 
-      let xAxisTop = d3.axisTop(xTop)
-                    .tickSize(0)
-                    .tickFormat("");
+        this.xAxis = d3.axisBottom(this.x)
+                  // .ticks(d3.timeMonth.every(1))  // Show ticks for every month
+                  .tickFormat(d3.timeFormat("%b %Y"))
+                  .tickSize(-this.height);
 
-      let xAxis2 = d3.axisBottom(x2)
+        this.xAxisTop = d3.axisTop(this.xTop)
+                  .tickSize(0)
+                  .tickFormat("");
+
+        this.xAxis2 = d3.axisBottom(this.x2)
                     .ticks(d3.timeYear.every(1))  // Show ticks for every year
                     .tickFormat(d3.timeFormat("%Y"));
 
-      let yAxis_left = d3.axisLeft(y)
-                    .tickSize(0)
-                    .tickFormat("");
+        this.yAxis_left = d3.axisLeft(this.y)
+                      .tickSize(0)
+                      .tickFormat("");
 
-      let yAxis_right = d3.axisRight(y)
-                    .tickSize(0)
-                    .tickFormat("");
+        this.yAxis_right = d3.axisRight(this.y)
+                      .tickSize(0)
+                      .tickFormat("");
 
-      let brush = d3.brushX()
-          .extent([[0, 0], [width, height2]])
-          .on("brush end", brushed);
+        this.brush = d3.brushX()
+            .extent([[0, 0], [this.width, this.height2]])
+            .on("brush end", this.brushed); 
 
-      svg.append("defs").append("clipPath")
-        .attr("id", "clip")
-        .append("rect")
-        .attr("width", width)
-        .attr("height", height);
+        this.svg.append("defs").append("clipPath")
+          .attr("id", "clip")
+          .append("rect")
+          .attr("width", this.width)
+          .attr("height", this.height);
 
-      let mainChart = svg.append("g")
-          .attr("class", "mainChart")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        this.mainChart = this.svg.append("g")
+            .attr("class", "mainChart")
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-      let navChart = svg.append("g")
-          .attr("class", "navChart")
-          .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+        this.navChart = this.svg.append("g")
+            .attr("class", "navChart")
+            .attr("transform", "translate(" + this.margin2.left + "," + this.margin2.top + ")");
 
-      
-      let defaultSelection;
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const startYear = currentYear - 9;
-      const minDate = new Date(startYear, 0, 1); // Jan 1st of start year
-      const maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
-      console.log("minDate", minDate, "maxDate", maxDate);
+        
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const startYear = currentYear - 9;
+        const minDate = new Date(startYear, 0, 1); // Jan 1st of start year
+        const maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
+        console.log("minDate:", minDate)
+        console.log("maxDate:", maxDate)
 
-
-      d3.json("public/dummy_data.json").then(function(jsonData) {
 
         // Parse dates
         const parseDate = d3.timeParse("%Y-%m-%d");
         const formatMonthYear = d3.timeFormat("%b %Y");
 
         // Transform the data
-        const formattedData = jsonData.events.map(event => ({
+        this.formattedData = fectchedData.map(event => ({
           type: event.type,
           date: parseDate(event.date),
           description: event.description,
-          svgFile: `public/${event.type}.svg`
+          svgFile: `public/${event.type}.svg`,
+          category: event.category,
+          categoryColor: event.color
         }));
 
-        console.log("formatted data:",formattedData);
+        console.log("formatted data:",this.formattedData);
     
         // let minDate = d3.min(formattedData, function(d) { return d.date; });
         // let maxDate = d3.max(formattedData, function(d) { return d.date; });
 
         // Adjust to start at the beginning of the minDate year and end at the end of the maxDate year
-        x.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
-        x2.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
+        this.x.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
+        this.x2.domain([d3.timeYear.floor(minDate), d3.timeYear.ceil(maxDate)]);
 
-        xTop.domain(x.domain());
+        this.xTop.domain(this.x.domain());
       
-        y2.domain(y.domain());
+        this.y2.domain(this.y.domain());
 
         // Add a count for each month to keep track of events in the same month
         const monthEventCount = {};
 
         // Loop through the formatted data and update y-coordinate based on the count
-        formattedData.forEach(function(d) {
+        this.formattedData.forEach(function(d) {
             const monthKey = formatMonthYear(d.date);
-             // Extract the second day of the month
+              // Extract the second day of the month
             const secondDayOfMonth = new Date(d.date);
             secondDayOfMonth.setDate(2);
 
@@ -165,9 +220,8 @@
             }
             d.verticalOffset = monthEventCount[monthKey]; // New property to store vertical offset
         });
-        console.log("formattedData", formattedData);
 
-        let lastEventDate = formattedData[formattedData.length - 1].secondDayOfMonth;
+        let lastEventDate = this.formattedData[this.formattedData.length - 1].secondDayOfMonth;
 
         // Calculate next month after last event and five months before that
         let nextMonthAfterLastEvent = d3.utcMonth.offset(lastEventDate, 1);
@@ -190,42 +244,43 @@
         }
 
         // Set default selection
-        defaultSelection = [x2(fiveMonthsBeforeNext), x2(nextMonthAfterLastEvent)];
+        this.defaultSelection = [this.x2(fiveMonthsBeforeNext), this.x2(nextMonthAfterLastEvent)];
 
+        console.log("defaultSelection", this.defaultSelection);
 
-        mainChart.append("g")
+        this.mainChart.append("g")
           .attr("class", "axis axis--x")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+          .attr("transform", "translate(0," + this.height + ")")
+          .call(this.xAxis);
 
-        mainChart.append("g")
+        this.mainChart.append("g")
           .attr("class", "axis axis--y")
-          .call(yAxis_left);
+          .call(this.yAxis_left);
 
-        mainChart.append("g")
+        this.mainChart.append("g")
           .attr("class", "axis axis--y")
-          .attr("transform", "translate(" + width + ",0)")
-          .call(yAxis_right);
+          .attr("transform", "translate(" + this.width + ",0)")
+          .call(this.yAxis_right);
 
-        mainChart.selectAll(".tick line")
+        this.mainChart.selectAll(".tick line")
           .attr("class", "tick-line");
 
-        mainChart.selectAll(".dot")
-          .data(formattedData)
+        this.mainChart.selectAll(".dot")
+          .data(this.formattedData)
           .enter().append("image") 
           .attr("class", "dot") // Assign a class for styling
           .attr("xlink:href", function(d) { return d.svgFile; })
-          .attr("x", function(d) { return x(d.secondDayOfMonth); })
+          .attr("x", d => this.x(d.secondDayOfMonth))
           .attr("y", function(d) { return d.verticalOffset * 40; }) // Adjust the y-coordinate based on the vertical offset
           .attr("width", 25) 
           .attr("height", 25);
 
-        mainChart.selectAll(".dotText")
-          .data(formattedData)
+        this.mainChart.selectAll(".dotText")
+          .data(this.formattedData)
           .enter().append("text")
           .attr("class", "dotText") // Assign a class for styling
-          .attr("x", function(d) { return x(d.secondDayOfMonth) + 30; }) // Position the text to the right of the image
-          .attr("y", function(d) { return height / 30 + d.verticalOffset * 40; }) // Align the text vertically with the image
+          .attr("x", d => this.x(d.secondDayOfMonth) + 30) // Position the text to the right of the image
+          .attr("y", d => this.height / 30 + d.verticalOffset * 40) // Align the text vertically with the image
           .text(function(d) { return d.type; })
           .on("click", function(event, d) {
               console.log('dotText clicked', d);
@@ -233,28 +288,29 @@
           });
 
 
-        navChart.selectAll(".dotContext")
-          .data(formattedData)
+        this.navChart.selectAll(".dotContext")
+          .data(this.formattedData)
           .enter().append("circle") 
           .attr("class", "dotContext") // Assign a class for styling
-          .attr("cx", function(d) { return x2(d.secondDayOfMonth) })
-          .attr("cy", function(d) {return height2 / 4 + d.verticalOffset * 7; })
-          .attr("r", 3);
+          .attr("cx", d => this.x2(d.secondDayOfMonth))
+          .attr("cy", d => this.height2 / 4 + d.verticalOffset * 7)
+          .attr("r", 3)
+          .style("fill", function(d) { return d.categoryColor; }); 
 
-        navChart.append("g")
+        this.navChart.append("g")
             .attr("class", "axis axis--x")
-            .attr("transform", "translate(0," + height2 + ")")
-            .call(xAxis2);
+            .attr("transform", "translate(0," + this.height2 + ")")
+            .call(this.xAxis2);
 
-        navChart.append("g")
+        this.navChart.append("g")
             .attr("class", "brush")
-            .call(brush)
-            .call(brush.move, defaultSelection);
+            .call(this.brush)
+            .call(this.brush.move, this.defaultSelection);
 
-        svg.append("g")
+        this.svg.append("g")
             .attr("class", "axis axis--x-top")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .call(xAxisTop);
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+            .call(this.xAxisTop);
 
             // figuring out why zoom event and click event are conflicting
         // svg.append("rect")
@@ -265,47 +321,11 @@
         //     .call(zoom);
             
 
-      });
-
-      function brushed(event) {
-        let s = event.selection || defaultSelection;
-        let fixedBrushWidth = defaultSelection[1] - defaultSelection[0];
-
-        if (s[1] - s[0] !== fixedBrushWidth) {
-            if (event.sourceEvent && event.sourceEvent.type === "mousemove") {
-                // Adjust the brush position while maintaining the fixed size
-                let newStart = s[0];
-                let newEnd = newStart + fixedBrushWidth;
-
-                // Prevent the brush from exceeding the right boundary
-                if (newEnd > x2.range()[1]) {
-                    newEnd = x2.range()[1];
-                    newStart = newEnd - fixedBrushWidth;
-                }
-
-                // Update the selection
-                s = [newStart, newEnd];
-                d3.select(this).call(brush.move, s);
-            }
+      } 
+      catch (error) {
+          console.error('Error fetching or parsing data:', error);
         }
 
-        x.domain(s.map(x2.invert, x2));
-
-        mainChart.selectAll(".dot")
-          .attr("x", function(d) { return x(d.secondDayOfMonth); })
-          .attr("y", function(d) {return d.verticalOffset * 40;});
-
-        mainChart.selectAll(".dotText")
-          .attr("x", function(d) { return x(d.secondDayOfMonth) + 30; })
-          .attr("y", function(d) { return height / 30 + d.verticalOffset * 40; });
-
-        mainChart.select(".axis--x").call(xAxis);
-
-        mainChart.selectAll(".tick line")
-          .attr("class", "tick-line");
-          
-      }
-  
     },
 
     methods: {
@@ -319,7 +339,120 @@
       closeModal() {
         this.modalShow = false;
       },
-      
+
+      async fetchData() {
+        try {
+          const response = await fetch('dummy_data.json');
+          const jsonData = await response.json();
+
+          const events = jsonData.events.map(
+            (event) => new Event(event.type, event.date, event.description)
+          );
+          return events;
+        } catch (error) {
+          console.error('Error fetching or parsing data:', error);
+        }
+      },
+
+      brushed(event) {
+        let s = event.selection || this.defaultSelection;
+        let fixedBrushWidth = this.defaultSelection[1] - this.defaultSelection[0];
+
+        if (s[1] - s[0] !== fixedBrushWidth) {
+            if (event.sourceEvent && event.sourceEvent.type === "mousemove") {
+                // Adjust the brush position while maintaining the fixed size
+                let newStart = s[0];
+                let newEnd = newStart + fixedBrushWidth;
+
+                // Prevent the brush from exceeding the right boundary
+                if (newEnd > this.x2.range()[1]) {
+                    newEnd = this.x2.range()[1];
+                    newStart = newEnd - fixedBrushWidth;
+                }
+
+                // Update the selection
+                s = [newStart, newEnd];
+                d3.select(".navChart .brush").call(this.brush.move, s);
+            }
+        }
+
+        this.x.domain(s.map(this.x2.invert, this.x2));
+       
+
+        this.mainChart.selectAll(".dot")
+          .attr("x", d => this.x(d.secondDayOfMonth))
+          .attr("y", d => d.verticalOffset * 40);
+
+        this.mainChart.selectAll(".dotText")
+          .attr("x", d => this.x(d.secondDayOfMonth) + 30)
+          .attr("y", d => this.height / 30 + d.verticalOffset * 40);
+
+        this.mainChart.select(".axis--x").call(this.xAxis);
+
+        this.mainChart.selectAll(".tick line")
+          .attr("class", "tick-line");
+          
+      },
+
+      updateChart() {
+        const filteredData = this.selectedOption ? 
+        this.formattedData.filter(d => d.category === this.selectedOption) : this.formattedData;
+
+        console.log("filteredData", filteredData);
+        this.updateMainChart(filteredData);
+        this.updateNavChart(filteredData);
+
+      },
+
+      updateMainChart(filteredData) {
+          // Clear existing elements
+        const mainChart = d3.select(".mainChart");
+        mainChart.selectAll(".dot, .dotText").remove();
+
+        // Add new elements based on filtered data
+        mainChart.selectAll(".dot")
+          .data(filteredData)
+          .enter().append("image")
+          .attr("class", "dot")
+          .attr("xlink:href", function(d) { return d.svgFile; })
+          .attr("x", d => this.x(d.secondDayOfMonth))
+          .attr("y", d => d.verticalOffset * 40)
+          .attr("width", 25)
+          .attr("height", 25);
+
+        mainChart.selectAll(".dotText")
+          .data(filteredData)
+          .enter().append("text")
+          .attr("class", "dotText")
+          .attr("x", d => this.x(d.secondDayOfMonth) + 30)
+          .attr("y", d => this.height / 30 + d.verticalOffset * 40)
+          .text(function(d) { return d.type; })
+          .on("click", function(event, d) {
+            console.log('dotText clicked', d);
+            this.openModal(d.type, d.description);
+          }.bind(this));
+
+
+      },
+
+      updateNavChart(filteredData) {
+        // Clear existing elements
+        const navChart = d3.select(".navChart");
+        navChart.selectAll(".dotContext").remove();
+
+        // Add new elements based on filtered data
+        navChart.selectAll(".dotContext")
+          .data(filteredData)
+          .enter().append("circle")
+          .attr("class", "dotContext")
+          .attr("cx", d => this.x2(d.secondDayOfMonth))
+          .attr("cy", d => this.height2 / 4 + d.verticalOffset * 7)
+          .attr("r", 3)
+          .style("fill", function(d) { return d.categoryColor; });
+
+      }
+
+
     },
  
   };
@@ -328,7 +461,7 @@
   <style>
   .timeline-container {
     position: absolute;
-    height: 600px;
+    height: 650px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -338,6 +471,11 @@
     border-color: rgba(0, 0, 0, 0.12);
   }
 
+  .content-wrapper {
+    display: flex;
+    margin: 10px 0px 0px 40px !important;
+    gap: 20px;
+  }
 
   .svg-container, .table-view-container {
     display: flex;
@@ -347,6 +485,19 @@
   }
 
   .tabs-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    margin: 0px 0px 0px 0px;
+  }
+
+  .title-text {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .search-menu {
     display: flex;
     justify-content: center;
     align-items: center;
