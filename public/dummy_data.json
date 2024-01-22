@@ -27,12 +27,22 @@
 
     {
         "type": "Medical Records Received",
-        "date": "2017-07-20",
+        "date": "2017-08-20",
         "description": "Medical records received to the timeline"
     },
     {
         "type": "Medical Records Received",
         "date": "2017-08-10",
+        "description": "Medical records received to the timeline"
+    },
+    {
+        "type": "Medical Records Received",
+        "date": "2017-08-15",
+        "description": "Medical records received to the timeline"
+    },
+    {
+        "type": "Medical Records Received",
+        "date": "2017-08-20",
         "description": "Medical records received to the timeline"
     },
     {
@@ -54,8 +64,26 @@
   
     },
     {
-        "type": "Evaluation Completed",
+        "type": "Sequence Data Received",
         "date": "2022-01-15",
+        "description": "Sequence data received to the timeline"
+  
+    },
+    {
+        "type": "Sequence Data Received",
+        "date": "2022-01-20",
+        "description": "Sequence data received to the timeline"
+  
+    },
+    {
+        "type": "Sequence Data Received",
+        "date": "2022-01-21",
+        "description": "Sequence data received to the timeline"
+  
+    },
+    {
+        "type": "Evaluation Completed",
+        "date": "2022-02-15",
         "description": "Evaluation completed to the timeline"
   
     },
@@ -78,23 +106,30 @@
   
     },
     {
-        "type": "Results Received",
+        "type": "Samples sent to MOSC",
         "date": "2022-04-20",
-        "description": "Results received to the timeline"
-        
-    },
-    {
-        "type": "Samples sent to MOSC",
-        "date": "2022-11-10",
         "description": "Samples sent to MOSC to the timeline"
   
     },
     {
         "type": "Samples sent to MOSC",
-        "date": "2022-12-10",
+        "date": "2022-05-10",
         "description": "Samples sent to MOSC to the timeline"
   
     },
+    {
+        "type": "Samples sent to MOSC",
+        "date": "2022-05-20",
+        "description": "Samples sent to MOSC to the timeline"
+  
+    },
+    {
+        "type": "Samples sent to MOSC",
+        "date": "2022-05-25",
+        "description": "Samples sent to MOSC to the timeline"
+  
+    },
+    
     {
         "type": "Results Received",
         "date": "2024-08-31",

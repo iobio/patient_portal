@@ -68,7 +68,7 @@ import Event from '../model/Event.js';
   
 <style>
   .table-container {
-    width: 960px;
+    width: 920px;
     height: 450px;
     overflow-y: auto;
   }
@@ -76,6 +76,7 @@ import Event from '../model/Event.js';
   table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 13px;
   }
   
   th, td {
