@@ -261,17 +261,17 @@ export function Timeline() {
     }
 
 
-    function updateChart(selectedOption) {
+    function updateChart(selectedOption, openModalCallback) {
         const filteredData = selectedOption ? 
         formattedData.filter(d => d.category === selectedOption) : formattedData;
 
         console.log("filteredData", filteredData);
-        updateMainChart(filteredData);
+        updateMainChart(filteredData, openModalCallback);
         updateNavChart(filteredData);
     }
 
 
-    function updateMainChart(filteredData) {
+    function updateMainChart(filteredData, openModalCallback) {
         // Clear existing elements
         const mainChart = d3.select(".mainChart");
         mainChart.selectAll(".dot, .dotText").remove();
@@ -296,7 +296,7 @@ export function Timeline() {
             .text(function(d) { return d.type; })
             .on("click", function(event, d) {
             console.log('dotText clicked', d);
-            openModal(d.type, d.description);
+            openModalCallback(d.type, d.description);
             }.bind(this));
     }
 

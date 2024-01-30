@@ -3,11 +3,13 @@
 import timeline_d3 from "./components/timeline_d3.vue"
 
 
+
 export default {
   name: 'App',
   components: {
     // timeline,
     timeline_d3,
+ 
   
 
     

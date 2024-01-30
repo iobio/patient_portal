@@ -108,6 +108,15 @@
     async mounted() {
       const fetchedData = await this.fetchData();
       console.log("fetchedData", fetchedData);
+      const parseDate = d3.timeParse("%Y-%m-%d");
+      this.formattedData = fetchedData.map(event => ({
+            type: event.type,
+            date: parseDate(event.date),
+            description: event.description,
+            svgFile: `public/${event.type}.svg`,
+            category: event.category,
+            categoryColor: event.color
+        }));
 
       this.d3Timeline = Timeline();
       this.d3Timeline.initializeTimeline(this.$refs.chart, fetchedData, this.openModal);
@@ -141,7 +150,7 @@
       },
 
       updateChart() {
-        this.d3Timeline.updateChart(this.selectedOption);
+        this.d3Timeline.updateChart(this.selectedOption, this.openModal);
       },
 
       estimateWidth(text) {
