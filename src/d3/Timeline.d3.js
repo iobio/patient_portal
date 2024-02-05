@@ -5,11 +5,19 @@ import Event from '../model/Event.js';
 export function Timeline() {
 
     let x, x2, xTop, y, y2, mainChart, navChart, width, height, height2, xAxis, xAxisTop, xAxis2, yAxis_left, 
-    yAxis_right, brush, svg, margin, margin2, defaultSelection, formattedData;
+    yAxis_right, brush, container, svg, margin, margin2, defaultSelection, formattedData;
 
     function initializeTimeline(selector, data, openModalCallback) {
 
-        svg = d3.select(selector);
+        container = d3.select(selector);
+        width = 960;
+        height = 500;
+        svg = container.append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("class", "timeline-svg");
+
+        
         margin = {top: 20, right: 20, bottom: 110, left: 20},
         margin2 = {top: 420, right: 20, bottom: 30, left: 20},
         width = +svg.attr("width") - margin.left - margin.right,
