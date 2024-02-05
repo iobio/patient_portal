@@ -5,7 +5,7 @@ import Event from '../model/Event.js';
 export function Timeline() {
 
     let x, x2, xTop, y, y2, mainChart, navChart, width, height, height2, xAxis, xAxisTop, xAxis2, yAxis_left, 
-    yAxis_right, brush, container, svg, margin, margin2, defaultSelection, formattedData;
+    yAxis_right, brush, container, svg, margin, margin2, defaultSelection, formattedData, minDate, maxDate;
 
     function initializeTimeline(selector, data, openModalCallback) {
 
@@ -73,8 +73,8 @@ export function Timeline() {
         const currentDate = new Date();
         const currentYear = currentDate.getFullYear();
         const startYear = currentYear - 9;
-        const minDate = new Date(startYear, 0, 1); // Jan 1st of start year
-        const maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
+        minDate = new Date(startYear, 0, 1); // Jan 1st of start year
+        maxDate = new Date(currentYear, 11, 31); // Dec 31st of current year
         console.log("minDate:", minDate)
         console.log("maxDate:", maxDate)
 
@@ -273,9 +273,40 @@ export function Timeline() {
         const filteredData = selectedOption ? 
         formattedData.filter(d => d.category === selectedOption) : formattedData;
 
+        if (filteredData.length > 0) {
+            let lastEventDate = filteredData[filteredData.length - 1].secondDayOfMonth;
+            
+            let nextMonthAfterLastEvent = d3.utcMonth.offset(lastEventDate, 1);
+            let fiveMonthsBeforeNext = d3.utcMonth.offset(nextMonthAfterLastEvent, -6);
+    
+            // Ensure fiveMonthsBeforeNext is not before the min date
+            if (fiveMonthsBeforeNext < minDate) {
+                fiveMonthsBeforeNext = minDate;
+                // Adjust nextMonthAfterLastEvent to maintain 6 month range
+                nextMonthAfterLastEvent = d3.utcMonth.offset(fiveMonthsBeforeNext, 6);
+            }
+    
+            let endOfTimeline = d3.timeYear.offset(d3.timeYear.ceil(maxDate), 1);
+    
+            // Ensure nextMonthAfterLastEvent is not beyond the max date
+            if (nextMonthAfterLastEvent > endOfTimeline) {
+                nextMonthAfterLastEvent = endOfTimeline;
+                // Adjust fiveMonthsBeforeNext to maintain 6 month range
+                fiveMonthsBeforeNext = d3.utcMonth.offset(nextMonthAfterLastEvent, -6);
+            }
+    
+            // Set new defaultSelection based on updated dates
+            defaultSelection = [x2(fiveMonthsBeforeNext), x2(nextMonthAfterLastEvent)];
+        }
+
         console.log("filteredData", filteredData);
+        console.log("New defaultSelection", defaultSelection);
+
         updateMainChart(filteredData, openModalCallback);
         updateNavChart(filteredData);
+
+        // Update the brush to reflect the new defaultSelection
+        navChart.select(".brush").call(brush.move, defaultSelection);
     }
 
 
