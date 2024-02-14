@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import {Table} from '../d3/Table.d3.js';
 
 export function SearchMenu() {
 
@@ -14,7 +15,7 @@ export function SearchMenu() {
     let container;
     let select;
 
-    function createSearchMenu(selector, onOptionSelected) {
+    function createSearchMenu(selector, onOptionSelected, data) {
         container = d3.select(selector)
             .append("div")
             .attr("class", "search-menu");
@@ -45,6 +46,13 @@ export function SearchMenu() {
             if (typeof onOptionSelected === 'function') {
                 onOptionSelected(selectedOption); // Execute callback with the selected option
             }
+
+            const filteredData = selectedOption ? 
+            data.filter(d => d.category === selectedOption) : data;
+            
+            const d3Table = Table();
+            const tableContainer = document.querySelector('.timeline-container')
+            d3Table.updateTable(tableContainer, filteredData);
             
         });
     }

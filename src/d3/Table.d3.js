@@ -9,6 +9,8 @@ export function Table() {
     let rows;
 
     function createTable(selector, data) {
+
+        console.log(data)
         container = d3.select(selector)
             .append("div")
             .attr("class", "table-view-container hide")
@@ -38,7 +40,34 @@ export function Table() {
             .append('td')
             .text(d => d);
     }
+
+    function updateTable(selector, filteredData) {
+        let tbody = d3.select(selector).select("tbody");
     
-    return {createTable}
+        let rows = tbody.selectAll("tr")
+                        .data(filteredData);
+    
+        rows.exit().remove();
+
+        let enterRows = rows.enter().append("tr");
+    
+        // Merge enter and update selections for rows
+        rows = enterRows.merge(rows);
+    
+        // Now bind cell data for each row
+        let cells = rows.selectAll("td")
+                        .data(function(event) {
+                            return [event.type, event.date, event.category];
+                        });
+    
+        cells.exit().remove();
+    
+        cells.enter().append("td")
+             .merge(cells)
+             .text(function(d) { return d; });
+    }
+    
+    
+    return {createTable, updateTable}
 
 }

@@ -4,7 +4,7 @@ export function SelectionButton() {
 
     let container;
 
-    function createButton(selector, showViewCallback) {
+    function createButton(selector) {
         container = d3.select(selector)
             .append("div")
             .attr("class", "tabs-container");
@@ -18,7 +18,7 @@ export function SelectionButton() {
             .text("Timeline")
             .on("click", function() {
                 updateButtonHighlight(this);
-                showViewCallback('timeline');
+                showView('timeline');
             });
     
         container.append("button")
@@ -26,7 +26,7 @@ export function SelectionButton() {
             .text("Table View")
             .on("click", function() {
                 updateButtonHighlight(this);
-                showViewCallback('table');  
+                showView('table');  
             });
 
         // Highlight the timeline button by default
@@ -35,8 +35,21 @@ export function SelectionButton() {
 
     function updateButtonHighlight(clickedButton) {
         const selector = ".tabs-container";
-        d3.selectAll(selector + " .button").classed("selected", false);
-        d3.select(clickedButton).classed("selected", true);
+        d3.selectAll(selector + " .button").classed("selected-button", false);
+        d3.select(clickedButton).classed("selected-button", true);
+    }
+
+    function showView(viewType) {
+        const timeline_view = document.querySelector('.timeline-svg');
+        const table_view = document.querySelector('.table-view-container');
+
+        if (viewType=== 'timeline') {
+            timeline_view.style.display = 'block';
+            table_view.style.display = 'none';
+        } else if (viewType === 'table'){
+            timeline_view.style.display = 'none';
+            table_view.style.display = 'block';
+        }
     }
 
     return {createButton}
