@@ -1,6 +1,6 @@
 <script>
 // import timeline from "./components/timeline.vue"
-import timeline_d3 from "./components/timeline_d3.vue"
+// import timeline_d3 from "./components/timeline_d3.vue"
 import vanillaJs_timeline from "./components/vanillaJs_timeline.vue";
 
 

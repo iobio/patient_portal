@@ -70,24 +70,19 @@ export default {
 <style>
 
   .parent-container{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
   }
 
   .tabs-search-container {
     display: flex;
     justify-content: flex-start;
-    position: relative;
     align-items: center;
-    margin-bottom: 600px;
-    margin-right: 250px;
-    width: 100%;
-
+    align-self: flex-start;
   }
 
   .selected-button {
@@ -99,7 +94,7 @@ export default {
     display: none;
   }
 
-  .search-menu {
+  .search-menu, .tabs-container{
     display: flex;
     justify-content: center;
     align-items: center;
