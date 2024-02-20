@@ -48,25 +48,11 @@
   
     },
     {
-        "type": "Diagnosis entered",
+        "type": "Samples sent to MOSC",
         "date": "2024-01-10",
-        "description": "Diagnosis entered to the timeline",
+        "description": "Samples to the timeline",
         "iconUrl": "/Diagnosis entered.svg"
   
-    },
-    {
-        "type": "Samples sent to MOSC",
-        "date": "2024-02-10",
-        "description": "Samples sent to MOSC to the timeline",
-        "iconUrl": "/Samples sent to MOSC.svg"
-  
-    },
-    {
-        "type": "Results Received",
-        "date": "2024-07-31",
-        "description": "Results received to the timeline",
-        "iconUrl": "/Results Received.svg"
-        
     }
 
    

@@ -25,6 +25,7 @@ export function SearchMenu() {
             .text("Filter by category:");
 
         select = container.append("select")
+            .style("background-color", "#efefef");
 
         select.append('option')
             .text('Please select a category')
