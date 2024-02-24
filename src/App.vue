@@ -11,10 +11,7 @@ export default {
     // timeline,
     // timeline_d3,
     vanillaJs_timeline
- 
-  
-
-    
+     
   },
   data: () => ({
     

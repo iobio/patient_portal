@@ -10,7 +10,7 @@
 
 <script>
 import * as d3 from 'd3';
-import Event from '../model/Event.js';
+import Event from 'timeline/src/Event.js';
 import events from '../dummy_data.json';
 import {SelectionButton} from '../d3/SelectionButton.d3.js';
 import {SearchMenu} from '../d3/SearchMenu.d3.js';
@@ -44,11 +44,12 @@ export default {
     methods: {
         async fetchData() {
             try {
-            const response = await fetch('dummy_data.json');
+            const response = await fetch('src/dummy_data.json');
             const jsonData = await response.json();
 
             const events = jsonData.events.map(
-                (event) => new Event(event.type, event.date, event.description)
+              (event) => new Event(event.id, event.name, event.date, event.description, event.iconUrl, event.pairEventId,
+                             event.eventType, event.status, event.estimatedCompleteDate)
             );
             return events;
             } catch (error) {
@@ -103,7 +104,6 @@ export default {
 
   .title-text {
     font-size: 13px;
-    font-weight: bold;
     padding: 10px;
   }
 

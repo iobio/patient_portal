@@ -35,7 +35,7 @@ export function Table() {
             .append('tr');
     
         rows.selectAll('td')
-            .data(event => [event.type, event.date, event.category])
+            .data(event => [event.name, event.date, event.category])
             .enter()
             .append('td')
             .text(d => d);
@@ -57,7 +57,7 @@ export function Table() {
         // Now bind cell data for each row
         let cells = rows.selectAll("td")
                         .data(function(event) {
-                            return [event.type, event.date, event.category];
+                            return [event.name, event.date, event.category];
                         });
     
         cells.exit().remove();

@@ -1,59 +1,98 @@
 { "events":[
     {
-        "type": "Application Submitted",
-        "date": "2020-04-01",
+        "id": "1",
+        "name": "Application Submitted",
+        "date": "2020-04-05",
         "description": "Application submitted to the timeline",
-        "iconUrl": "/Application Submitted.svg"
+        "iconUrl": "/Application Submitted.svg",
+        "pairEventId": "1",
+        "eventType": "paired",
+        "status": "started",
+        "estimatedCompleteDate": "2020-05-05"
     },    
     {
-        "type": "Medical Records Requested",
-        "date": "2020-05-01",
+        "id": "2",
+        "name": "Medical Records Requested",
+        "date": "2020-05-05",
         "description": "Medical records submitted to the timeline",
-        "iconUrl": "/Medical Records Submitted.svg"
-
+        "iconUrl": "/Medical Records Submitted.svg",
+        "pairEventId": "1",
+        "eventType": "paired",
+        "status": "completed",
+        "estimatedCompleteDate": null
     },
-    {
-        "type": "Medical Records Received",
+    {   
+        "id": "3",
+        "name": "Medical Records Received",
         "date": "2020-08-02",
         "description": "Medical records received to the timeline",
-        "iconUrl": "/Medical Records Received.svg"
-        
+        "iconUrl": "/Medical Records Received.svg",
+        "pairEventId": null,
+        "eventType": "single",
+        "status": null,
+        "estimatedCompleteDate": null
     },
     {
-        "type": "Decision Date",
+        "id": "4",
+        "name": "Decision Date",
         "date": "2020-10-02",
         "description": "Decision date to the timeline",
-        "iconUrl": "/Decision Date.svg"
+        "iconUrl": "/Decision Date.svg",
+        "pairEventId": null,
+        "eventType": "single",
+        "status": null,
+        "estimatedCompleteDate": null
   
     },
     {
-        "type": "Evaluation Started",
+        "id": "5",
+        "name": "Evaluation Started",
         "date": "2021-04-02",
         "description": "Evaluation started to the timeline",
-        "iconUrl": "/Evaluation Started.svg"
+        "iconUrl": "/Evaluation Started.svg",
+        "pairEventId": "2",
+        "eventType": "paired",
+        "status": "started",
+        "estimatedCompleteDate": "2021-07-15"
   
     },
     {
-        "type": "Evaluation Completed",
+        "id": "6",
+        "name": "Evaluation Completed",
         "date": "2021-07-15",
         "description": "Evaluation completed to the timeline",
-        "iconUrl": "/Evaluation Completed.svg"
+        "iconUrl": "/Evaluation Completed.svg",
+        "pairEventId": "2",
+        "eventType": "paired",
+        "status": "completed",
+        "estimatedCompleteDate": null
   
     },
-    {
-        "type": "Wrap Up Documents",
+    {   
+        "id": "7",
+        "name": "Wrap Up Documents",
         "date": "2021-09-15",
         "description": "Wrap up docs to the timeline",
-        "iconUrl": "/Wrap Up Documents.svg"
+        "iconUrl": "/Wrap Up Documents.svg",
+        "pairEventId": null,
+        "eventType": "single",
+        "status": null,
+        "estimatedCompleteDate": null
   
     },
     {
-        "type": "Samples sent to MOSC",
+        "id": "8",
+        "name": "Samples sent to MOSC",
         "date": "2024-01-10",
         "description": "Samples to the timeline",
-        "iconUrl": "/Diagnosis entered.svg"
+        "iconUrl": "/Diagnosis entered.svg",
+        "pairEventId": "3",
+        "eventType": "paired",
+        "status": "started",
+        "estimatedCompleteDate": "2024-03-10"
   
     }
+
 
    
      
