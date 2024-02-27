@@ -9,8 +9,8 @@ export function Table() {
     let rows;
 
     function createTable(selector, data) {
+        data.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-        console.log(data)
         container = d3.select(selector)
             .append("div")
             .attr("class", "table-view-container hide")

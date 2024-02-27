@@ -58,8 +58,8 @@ export default {
         },
 
         handleSelectionChange(selectedOption) {
-            // Update the timeline based on the selected option
-            this.d3Timeline.update(selectedOption);
+          // Update the timeline based on the selected option
+          this.d3Timeline.update(selectedOption);
         },
     }
 };
