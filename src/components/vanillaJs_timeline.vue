@@ -1,9 +1,18 @@
 <template>
 
   <div class="parent-container">
-    <div ref="tabs-search-container" class="tabs-search-container">
+    
+    <div class="banner-container">
+      <div class="icon-container">
+        <v-icon color="#0f60c3" size="40">mdi-chart-timeline</v-icon>
+        <span style="font-size: 16px; margin-left: 10px; font-weight: 600">Case Timeline</span>
 
+      </div>
+       
+      <div ref="tabs-search-container" class="tabs-search-container"></div>
     </div>
+   
+
   </div>
    
 </template>
@@ -18,17 +27,17 @@ import {Table} from '../d3/Table.d3.js';
 import {createTimeline} from 'timeline/src/Timeline.js';
 
 export default {
+
+    name: 'vanillaJs_timeline',
+
     async mounted() {
         const fetchedData = await this.fetchData();
         console.log("fetchedData", fetchedData);
 
-        // this.d3Timeline = Timeline();
-        // this.d3Timeline.initializeTimeline(this.$refs['timeline-container'], fetchedData, this.openModal);
-
         this.d3Timeline = createTimeline(events);
         document.querySelector('.parent-container').appendChild(this.d3Timeline.dom);
 
-        this.d3SelectionButton = SelectionButton();   
+        this.d3SelectionButton = SelectionButton(); 
         this.d3SelectionButton.createButton(this.$refs['tabs-search-container']);
 
         this.d3SearchMenu = SearchMenu();
@@ -37,10 +46,10 @@ export default {
         this.d3Table = Table();
         const tableContainer = document.querySelector('.timeline-container')
         this.d3Table.createTable(tableContainer, fetchedData);
-        // this.d3Table.createTable(this.$refs['timeline-container'], fetchedData);
 
     },
 
+ 
     methods: {
         async fetchData() {
             try {
@@ -77,17 +86,31 @@ export default {
     justify-content: center;
     width: fit-content;
     margin: auto;
+    background-color: #d9d9d9;
+    border-radius: 10px;
+  }
+
+  .banner-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .icon-container {
+    margin-left: 30px;
   }
 
   .tabs-search-container {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center;
-    align-self: flex-start;
+    margin-right: 30px;
   }
 
   .selected-button {
-    background-color: #67AF54;
+    background-color: #0f60c3;
     color: #ffffff;
   }
 
@@ -108,10 +131,12 @@ export default {
   }
 
   .table-container {
-    width: 920px;
+    width: 900px;
     height: 450px;
     overflow-y: auto;
-    padding: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 20px;
   }
   
   table {

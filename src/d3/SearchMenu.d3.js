@@ -22,7 +22,7 @@ export function SearchMenu() {
 
         container.append("p")
             .attr("class", "title-text")
-            .text("Filter by category:");
+            .text("Filter:");
 
         select = container.append("select")
             .style("background-color", "#efefef");
