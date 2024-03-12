@@ -12,6 +12,7 @@
     "@mdi/font": "^7.3.67",
     "d3": "^7.8.5",
     "sass": "^1.69.5",
+    "timeline": "file:../timeline",
     "vue": "^3.3.11",
     "vuetify": "^3.4.7"
   },

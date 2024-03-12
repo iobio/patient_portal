@@ -7,6 +7,7 @@ class Event {
       this.icon = this.setIcon();
       this.svgContainer = this.setSvgContainer();
       this.color = this.setColor();
+      this.category = this.setCategory();
     }
 
     setIcon() {
@@ -32,17 +33,17 @@ class Event {
 
     setColor() {
         const typeToColorMapping = {
-            "Application Submitted": "#FFFFFF",
-            "Medical Records Submitted": "#FFFFFF",
-            "Medical Records Received": "#FFFFFF",
-            "Decision Date": "#000080",
+            "Application Submitted": "#699BF7",
+            "Medical Records Submitted": "#699BF7",
+            "Medical Records Received": "#699BF7",
+            "Decision Date": "#699BF7",
             "Evaluation Started": "#006400",
-            "Sequence Data Received": "#FFA500",
-            "Evaluation Completed": "#000080",
-            "Wrap Up Documents": "#FF0000",
-            "Diagnosis entered": "#90B134",
-            "Samples sent to MOSC": "#90B134",
-            "Results Received": "#90B134",
+            "Sequence Data Received": "#006400",
+            "Evaluation Completed": "#006400",
+            "Wrap Up Documents": "#006400",
+            "Diagnosis entered": "#FF0000",
+            "Samples sent to MOSC": "#FF0000",
+            "Results Received": "#FF0000",
           };
       
           // Set the color based on the event type
@@ -81,6 +82,25 @@ class Event {
         const year = eventDate.getFullYear();
 
         return `${month} ${year}`;
+    }
+
+    setCategory() {
+        const typeToCategoryMapping = {
+            "Application Submitted": "Application",
+            "Medical Records Submitted": "Application",
+            "Medical Records Received": "Application",
+            "Decision Date": "Application",
+            "Evaluation Started": "Evaluation",
+            "Sequence Data Received": "Evaluation",
+            "Evaluation Completed": "Evaluation",
+            "Wrap Up Documents": "Evaluation",
+            "Diagnosis entered": "Diagnosis",
+            "Samples sent to MOSC": "Diagnosis",
+            "Results Received": "Diagnosis",
+          };
+      
+          // Set the category based on the event type
+          return typeToCategoryMapping[this.type] || null;
     }
   }
   
