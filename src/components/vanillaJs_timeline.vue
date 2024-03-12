@@ -4,7 +4,7 @@
     
     <div class="banner-container">
       <div class="icon-container">
-        <v-icon color="#0f60c3" size="40">mdi-chart-timeline</v-icon>
+        <v-icon color="#0f60c3" size="30">mdi-chart-timeline</v-icon>
         <span style="font-size: 16px; margin-left: 10px; font-weight: 600">Case Timeline</span>
 
       </div>
@@ -57,7 +57,7 @@ export default {
             const jsonData = await response.json();
 
             const events = jsonData.events.map(
-              (event) => new Event(event.id, event.name, event.date, event.description, event.iconUrl, event.pairEventId,
+              (event) => new Event(event.id, event.name, event.date, event.description, event.category, event.iconUrl, event.pairEventId,
                              event.eventType, event.status, event.estimatedCompleteDate)
             );
             return events;
