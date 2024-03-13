@@ -1,5 +1,5 @@
 <script>
-import Timeline from "./components/Timeline.vue";
+import Timeline from "./components/timeline.vue";
 
 export default {
   name: 'App',
