@@ -1,179 +1,154 @@
 <template>
-  <v-container class="timeline-container">
-    <v-card-title class="timeline-title">
-      Case History
-    </v-card-title>
-    <v-timeline direction="horizontal" line-thickness="23" side="start" class="timeline-group">
-      <v-timeline-item
-        v-for="(event, i) in events"
-        :key="i"
-        :dot-color="event.color"
-        size="small"
-      >
-        <div style="display: flex; flex-direction: column; align-items: center;">
-          <!-- <div class="title-container">
-            <p class="text-title">
-              {{ event.type }}
-            </p>
-           
-          </div> -->
-          <div class="title-container">
-            <v-tooltip top :text="event.description">
-              <template v-slot:activator="{ props }">
-                <p v-bind="props" class="text-title">{{ event.type }}</p>
-              </template>
-            </v-tooltip>
-          </div>
-          
-          
-          <div class="image-container">
-            <img :src="event.svgContainer" :alt="event.type">
-          </div>
-        </div>
-       
-        <template v-slot:opposite>
-          <p class="text-date">
-            {{ event.formattedDate }}
-          </p>
-        </template>
-          
-      </v-timeline-item>
-    </v-timeline>
-  </v-container>
 
+  <div class="parent-container">
+    
+    <div class="banner-container">
+      <div class="icon-container">
+        <v-icon color="#0f60c3" size="30">mdi-chart-timeline</v-icon>
+        <span style="font-size: 16px; margin-left: 10px; font-weight: 600">Case Timeline</span>
+
+      </div>
+       
+      <div ref="tabs-search-container" class="tabs-search-container"></div>
+    </div>
+   
+
+  </div>
+   
 </template>
 
 <script>
-import Event from '../model/Event.js'
+import * as d3 from 'd3';
+import {createTimeline, SelectionButton, SearchMenu, Table, Event} from 'iobio-timeline';
 
 export default {
-  name: 'timeline',
-  components: {
-    
-  },
-  data () {
-    return {
-      events: [],
+
+    name: 'timeline',
+
+    async mounted() {
+      const fetchedData = await this.fetchData();
+
+      this.d3Timeline = createTimeline(fetchedData);
+      document.querySelector('.parent-container').appendChild(this.d3Timeline.dom);
+
+      this.d3SelectionButton = SelectionButton(); 
+      this.d3SelectionButton.createButton(this.$refs['tabs-search-container']);
+
+      this.d3SearchMenu = SearchMenu();
+      this.d3SearchMenu.createSearchMenu(this.$refs['tabs-search-container'], this.handleSelectionChange, fetchedData);
+
+      this.d3Table = Table();
+      const tableContainer = document.querySelector('.timeline-container')
+      this.d3Table.createTable(tableContainer, fetchedData);
+
+    },
+
+ 
+    methods: {
+        async fetchData() {
+            try {
+            const response = await fetch('src/dummy_data.json');
+            const jsonData = await response.json();
+
+            const events = jsonData.events.map(
+              (event) => new Event(event.id, event.name, event.date, event.description, event.category, event.iconUrl, event.pairEventId,
+                             event.eventType, event.status, event.estimatedCompleteDate)
+            );
+            return events;
+            } catch (error) {
+            console.error('Error fetching or parsing data:', error);
+            }
+        },
+
+        handleSelectionChange(selectedOption) {
+          // Update the timeline based on the selected option
+          this.d3Timeline.update(selectedOption);
+        },
     }
+};
 
-  },
-    
-  computed: {
-    
-  },
-
-  methods: {
-    // getSvgPath(eventType) {
-    //   // Logic to determine the SVG path based on the event type
-    //   if (eventType === 'Pheno Added') {
-    //     return '/tall-icon-container.svg';
-    //   } else if (eventType === 'Unknown sig variant') {
-    //     return '/tall-icon-container.svg';
-    //   } else if (eventType === 'Significant variant') {
-    //     return '/tall-icon-container.svg';
-    //   } else if (eventType === 'Case diagnosed') {
-    //     return '/tall-icon-container.svg'
-    //   } else {
-    //     // Default SVG path if the event type doesn't match
-    //     return '/short-icon-container.svg';
-    //   }
-    // }
-    
-  },
-
-  created () {
-    
-  },
-
-  async mounted() {
-    try {
-      const response = await fetch('dummy_data.json');
-      const jsonData = await response.json();
-
-      // Populate the events array with Event instances
-      this.events = jsonData.events.map(
-        (event) => new Event(event.type, event.date, event.description)
-      );
-    } catch (error) {
-      console.error('Error fetching or parsing data:', error);
-    }
-
-    console.log(this.events);
-  },
-}
 
 </script>
 
 
+<style>
 
-<style lang="sass">
+  .parent-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    margin: auto;
+    background-color: #d9d9d9;
+    border-radius: 10px;
+  }
 
-.timeline-container
-  position: absolute
-  height: 400px
-  top: 50%
-  left: 50%
-  transform: translate(-50%, -50%)
-  background-color: #ffffff
-  border-width: 1px
-  border-style: ridge
-  border-color: rgba(0, 0, 0, 0.12)
+  .banner-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
 
-.timeline-title
-  font-size: 20px !important
-  font-weight: bold !important
-  color: #808080 !important
- 
-.v-container
-  padding: 20px !important
-  overflow-x: auto !important
+  .icon-container {
+    margin-left: 30px;
+  }
 
-.timeline-group
-  margin: 180px 0px 0px 0px!important
-  padding: 0px 0px 0px 0px !important
+  .tabs-search-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 30px;
+  }
 
-.title-container
-  margin: 0px 0px 25px 0px !important
-  padding: 0px 0px 0px 0px !important
-  justify-content: space-between !important
-  align-items: center !important
-  height: 10px !important
-  width: 60px !important
+  .selected-button {
+    background-color: #0f60c3;
+    color: #ffffff;
+  }
 
-.text-title
-  font-size: 10px !important
-  font-weight: bold !important
-  margin: 0px 0px 0px 0px !important
-  padding: 0px 0px 0px 0px !important
-  justify-content: space-around !important
-  text-align: center !important
-  color: #808080 !important
+  .hide {
+    display: none;
+  }
 
-.image-container
-  padding: 0px 0px 0px 0px !important
-  margin: 0px 0px 0px 0px !important
+  .search-menu, .tabs-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+  }
 
-.v-timeline-item__opposite
-  margin: 5px 0px 0px 0px !important
-  padding: 0px 0px 0px 0px !important
-  width: 100px !important
+  .title-text {
+    font-size: 13px;
+    padding: 10px;
+  }
 
-.v-timeline-item__body
-  margin: 0px 0px 0px 0px !important
-  padding: 0px 0px 0px 0px !important
-  justify-content: center !important
-  align-items: center !important
-  width: 46px !important
-
-.text-date
-  font-size: 10px !important
-  font-weight: bold !important
-  margin: 15px 25px 0px 0px !important
-  padding: 0px 0px 0px 0px !important
-  text-align: center !important
-  transform: rotate(315deg) !important
-  color: #808080 !important
+  .table-container {
+    width: 900px;
+    height: 450px;
+    overflow-y: auto;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-top: 20px;
+  }
   
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
   
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  thead {
+    background-color: #f2f2f2;
+  }
 
 </style>
+
+
