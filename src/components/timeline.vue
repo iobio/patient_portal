@@ -19,52 +19,52 @@
 
 <script>
 import * as d3 from 'd3';
-import {createTimeline, SelectionButton, SearchMenu, Table, Event} from 'iobio-timeline';
+import {createTimeline, SelectionButton, SearchMenu, Table} from 'iobio-timeline';
 
 export default {
 
     name: 'timeline',
 
-    async mounted() {
-      const fetchedData = await this.fetchData();
-
-      this.d3Timeline = createTimeline(fetchedData);
-      document.querySelector('.parent-container').appendChild(this.d3Timeline.dom);
-
-      this.d3SelectionButton = SelectionButton(); 
-      this.d3SelectionButton.createButton(this.$refs['tabs-search-container']);
-
-      this.d3SearchMenu = SearchMenu();
-      this.d3SearchMenu.createSearchMenu(this.$refs['tabs-search-container'], this.handleSelectionChange, fetchedData);
-
-      this.d3Table = Table();
-      const tableContainer = document.querySelector('.timeline-container')
-      this.d3Table.createTable(tableContainer, fetchedData);
-
+    props:{
+      events: {
+        type: Array,
+        required: true,
+        default: () => [] 
+      }
     },
 
- 
+    mounted() {
+
+        this.renderTimeline();
+      
+    },
+
     methods: {
-        async fetchData() {
-            try {
-            const response = await fetch('src/dummy_data.json');
-            const jsonData = await response.json();
 
-            const events = jsonData.events.map(
-              (event) => new Event(event.id, event.name, event.date, event.description, event.category, event.iconUrl, event.pairEventId,
-                             event.eventType, event.status, event.estimatedCompleteDate)
-            );
-            return events;
-            } catch (error) {
-            console.error('Error fetching or parsing data:', error);
-            }
-        },
+      renderTimeline() {
 
-        handleSelectionChange(selectedOption) {
-          // Update the timeline based on the selected option
-          this.d3Timeline.update(selectedOption);
-        },
-    }
+        this.d3Timeline = createTimeline(this.events);
+        document.querySelector('.parent-container').appendChild(this.d3Timeline.dom);
+
+        this.d3SelectionButton = SelectionButton(); 
+        this.d3SelectionButton.createButton(this.$refs['tabs-search-container']);
+
+        this.d3SearchMenu = SearchMenu();
+        this.d3SearchMenu.createSearchMenu(this.$refs['tabs-search-container'], this.handleSelectionChange, this.events);
+
+        this.d3Table = Table();
+        const tableContainer = document.querySelector('.timeline-container')
+        this.d3Table.createTable(tableContainer, this.events);
+
+      },
+
+
+      handleSelectionChange(selectedOption, data) {
+        // Update the timeline based on the selected option
+        this.d3Timeline.update(selectedOption);
+        this.d3Table.updateTable('.timeline-container', data);
+      },
+}
 };
 
 
