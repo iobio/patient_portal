@@ -1,7 +1,7 @@
 {
-  "name": "patient_portal",
+  "name": "vue-timeline",
   "private": false,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,5 +19,30 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
     "vite": "^5.0.8"
-  }
+  },
+  "description": "This is a patient portal project for Calypso and UDN",
+  "main": "src/components/timeline.vue",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iobio/patient_portal.git"
+  },
+  "author": "Yang Qi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iobio/patient_portal/issues"
+  },
+  "homepage": "https://github.com/iobio/patient_portal#readme",
+  "keywords": [
+    "vue",
+    "timeline",
+    "iobio"
+  ],
+  "files": [
+    "src/",
+    "public/",
+    "index.html",
+    "README.md",
+    "vite.config.js"
+  ]
+    
 }
