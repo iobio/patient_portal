@@ -35,13 +35,13 @@ export default {
 
     mounted() {
 
-        this.renderTimeline();
+        this.init();
       
     },
 
     methods: {
 
-      renderTimeline() {
+      init() {
 
         this.d3Timeline = createTimeline(this.events);
         document.querySelector('.parent-container').appendChild(this.d3Timeline.dom);
@@ -101,52 +101,6 @@ export default {
     justify-content: flex-end;
     align-items: center;
     margin-right: 30px;
-  }
-
-  .selected-button {
-    background-color: #0f60c3;
-    color: #ffffff;
-  }
-
-  .hide {
-    display: none;
-  }
-
-  .search-menu, .tabs-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-  }
-
-  .title-text {
-    font-size: 13px;
-    padding: 10px;
-  }
-
-  .table-container {
-    width: 900px;
-    height: 450px;
-    overflow-y: auto;
-    margin-left: 30px;
-    margin-right: 30px;
-    margin-top: 20px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  thead {
-    background-color: #f2f2f2;
   }
 
 </style>
