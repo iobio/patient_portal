@@ -6,7 +6,8 @@
 
 
 <script>
-import Timeline from "./components/timeline.vue";
+// import Timeline from "./components/timeline.vue";
+import Timeline from 'iobio-vue-timeline';
 
 
 export default {

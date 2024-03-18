@@ -1,7 +1,7 @@
 {
   "name": "iobio-vue-timeline",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,8 @@
   "dependencies": {
     "@mdi/font": "^7.3.67",
     "d3": "^7.8.5",
-    "iobio-timeline": "^1.1.2",
+    "iobio-timeline": "^1.1.3",
+    "iobio-vue-timeline": "^1.0.3",
     "sass": "^1.69.5",
     "vue": "^3.3.11",
     "vuetify": "^3.4.7"
@@ -44,5 +45,4 @@
     "README.md",
     "vite.config.js"
   ]
-    
 }
