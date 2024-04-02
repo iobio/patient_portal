@@ -6,8 +6,8 @@
 
 
 <script>
-// import Timeline from "./components/timeline.vue";
-import Timeline from 'iobio-vue-timeline';
+import Timeline from "./components/timeline.vue";
+// import Timeline from 'iobio-vue-timeline';
 
 
 export default {
@@ -31,7 +31,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await fetch('/dummy_data.json');
+        const response = await fetch('/test_data.json');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

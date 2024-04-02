@@ -19,7 +19,7 @@
 
 <script>
 import * as d3 from 'd3';
-import {createTimeline, SelectionButton, SearchMenu, Table} from 'iobio-timeline';
+import {createTimeline, SelectionButton, Table} from 'iobio-timeline/src/Timeline.js';
 
 export default {
 
@@ -49,21 +49,12 @@ export default {
         this.d3SelectionButton = SelectionButton(); 
         this.d3SelectionButton.createButton(this.$refs['tabs-search-container']);
 
-        this.d3SearchMenu = SearchMenu();
-        this.d3SearchMenu.createSearchMenu(this.$refs['tabs-search-container'], this.handleSelectionChange, this.events);
-
         this.d3Table = Table();
         const tableContainer = document.querySelector('.timeline-container')
         this.d3Table.createTable(tableContainer, this.events);
 
       },
 
-
-      handleSelectionChange(selectedOption, data) {
-        // Update the timeline based on the selected option
-        this.d3Timeline.update(selectedOption);
-        this.d3Table.updateTable('.timeline-container', data);
-      },
 }
 };
 
