@@ -9,7 +9,7 @@
 
       </div>
        
-      <div ref="tabs-search-container" class="tabs-search-container"></div>
+      <div ref="button-container" class="button-container"></div>
     </div>
    
 
@@ -34,28 +34,25 @@ export default {
     },
 
     mounted() {
-
-        this.init();
-      
+      this.init();
     },
 
     methods: {
 
       init() {
 
-        this.d3Timeline = createTimeline(this.events);
-        document.querySelector('.parent-container').appendChild(this.d3Timeline.dom);
+          this.d3Timeline = createTimeline(this.events);
+          document.querySelector('.parent-container').appendChild(this.d3Timeline.dom);
 
-        this.d3SelectionButton = SelectionButton(); 
-        this.d3SelectionButton.createButton(this.$refs['tabs-search-container']);
+          this.d3SelectionButton = SelectionButton(); 
+          this.d3SelectionButton.createButton(this.$refs['button-container']);
 
-        this.d3Table = Table();
-        const tableContainer = document.querySelector('.timeline-container')
-        this.d3Table.createTable(tableContainer, this.events);
-
+          this.d3Table = Table();
+          const tableContainer = document.querySelector('.timeline-container')
+          this.d3Table.createTable(tableContainer, this.events);
       },
 
-}
+    }
 };
 
 
@@ -83,11 +80,17 @@ export default {
     width: 100%;
   }
 
+  .banner-container > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .icon-container {
     margin-left: 30px;
   }
 
-  .tabs-search-container {
+  .button-container {
     display: flex;
     justify-content: flex-end;
     align-items: center;
